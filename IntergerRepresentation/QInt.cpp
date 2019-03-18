@@ -197,3 +197,39 @@ char * BinToHex(bool * bit)
 	return hexChar;
 }
 
+char * DecToHex(QInt x)
+{
+	// Cấp phát vùng nhớ để lưu chuỗi Hex
+	char *hexChar = new char[33];
+
+	// Đánh dấu kết thúc chuỗi
+	hexChar[32] = '\0';
+
+	int tempSum;
+	int heSoNhan[] = { 1, 2, 4, 8 };
+	int tempInt;
+
+	// Duyệt trên khối int
+	for (int i = 0; i < 4; i++)
+	{
+		tempInt = x.data[i];
+
+		for (int j = 0; j < 32;)
+		{
+			// Biến tạm tính tổng
+			tempSum = 0;
+
+			for (int k = 0; k < 4; k++)
+			{
+				if (tempInt & 1) tempSum += heSoNhan[j];
+				tempInt >>= 1;
+				j++;
+			}
+
+			// Đẩy ký tự vào mảng char
+			hexChar[((i + 1) * j - 1) / 4] = arrOfHexCode[tempSum];
+		}
+	}
+
+	return hexChar;
+}
