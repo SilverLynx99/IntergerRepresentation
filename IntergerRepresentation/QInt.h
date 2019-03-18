@@ -33,4 +33,5 @@ bool *DecToBin(QInt x);
 // WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
 // LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
 QInt BinToDec(bool *bit);
-ĐẤVÁV
+QInt operator+( QInt a,QInt b);
+QInt operator-(QInt a, QInt b);

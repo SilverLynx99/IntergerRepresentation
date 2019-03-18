@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	// Kiểm tra đủ 3 tham số không. Nếu không --> báo lỗi
+	/*// Kiểm tra đủ 3 tham số không. Nếu không --> báo lỗi
 	if (argc != 3) {
 		cout << "Usage: file.exe input.txt output.txt";
 		exit(1);
@@ -35,7 +35,16 @@ int main(int argc, char* argv[])
 	// Đóng file
 	inputFile.close();
 	outputFile.close();
-
+	*/
+	QInt a, b;
+	a.data[3] = 68;
+	//a.data[3] = 1234;
+	b.data[3] = 32;
+	//a.data[2] = 1234567;
+	//b.data[2] = 1234567;
+	//b.data[3] = 1234;
+	a - b;
+	//cout<<(1<<31);
 	system("pause");
 	return 0;
 }

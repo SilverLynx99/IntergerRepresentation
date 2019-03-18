@@ -125,3 +125,152 @@ QInt BinToDec(bool * bit)
 
 	return tempStorage;
 }
+
+QInt operator+(QInt a, QInt b)
+{
+	int i = b.data[3];
+	int j = a.data[3],temp=0;
+	QInt kq;
+	for (int p = 3; p >=0; p--)
+	{
+		/*if (temp == 1)
+		{
+			a.data[p]++;
+		}
+		*/
+		for (int k = 32; k >=1; k--)
+		{
+			i = (b.data[p] >> 32 - k) & 1;
+			j = (a.data[p] >> 32 - k) & 1;
+			
+			if (temp == 0)
+			{
+				if (i == 1 && j == 1)
+				{
+					temp = 1;
+
+				}
+				if (i == 1 && j == 0)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32  - k));
+					temp = 0;
+				}
+				if (i == 0 && j == 1)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - k));
+					temp = 0;
+				}
+				/*if (i == 0 && j == 0)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
+					temp = 0;
+				}
+				*/
+			}
+			else
+			{
+				if (i == 1 && j == 1)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32  - k));
+					temp = 1;
+				}
+				if (i == 1 && j == 0)
+				{
+					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
+					temp = 1;
+				}
+				if (i == 0 && j == 1)
+				{
+					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
+					temp = 1;
+				}
+				if (i == 0 && j == 0)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - k));
+					temp = 0;
+				}
+			}
+		}
+		cout <<endl;
+	}
+	//cout<<(1<<31)
+	cout << kq.data[3]<<endl;
+	cout << kq.data[2];
+	return QInt();
+}
+
+QInt operator-(QInt a, QInt b)
+{
+	int i = b.data[3];
+	int j = a.data[3], temp = 0;
+	QInt kq;
+	for (int p = 3; p >= 0; p--)
+	{
+		/*if (temp == 1)
+		{
+			a.data[p]++;
+		}
+		*/
+		for (int k = 32; k >= 1; k--)
+		{
+			i = (b.data[p] >> 32 - k) & 1;
+			j = (a.data[p] >> 32 - k) & 1;
+
+			if (temp == 0)
+			{
+				if (i == 1 && j == 1)
+				{
+					//temp = 1;
+
+				}
+				if (i == 1 && j == 0)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - k));
+					temp = 0;
+				}
+				if (i == 0 && j == 1)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - k));
+					temp = 1;
+				}
+				/*if (i == 0 && j == 0)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
+					temp = 0;
+				}
+				*/
+			}
+			else
+			{
+				if (i == 1 && j == 1)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - k));
+					temp = 1;
+				}
+				if (i == 1 && j == 0)
+				{
+					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
+					temp = 0;
+				}
+				if (i == 0 && j == 1)
+				{
+					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
+					temp = 1;
+				}
+				if (i == 0 && j == 0)
+				{
+					kq.data[p] = kq.data[p] | (1 << (32 - k));
+					temp = 1;
+				}
+			}
+		}
+		cout << endl;
+
+	}
+	//cout<<(1<<31)
+	cout << kq.data[3] << endl;
+	cout << kq.data[2];
+	return QInt();
+}
+
+
