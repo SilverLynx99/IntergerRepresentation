@@ -10,7 +10,7 @@ struct QInt
 {
 	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
 	// đi từ trái qua phải
-	int data[4] = { 0 };
+	unsigned int data[4] = { 0 };
 };
 
 // Chức năng: Xử lý stream in và xuất ra stream out
@@ -18,7 +18,7 @@ struct QInt
 bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
 // Xử lý nhập liệu
-void ScanQInt(int *ArrayDataQInt);
+void ScanQInt(QInt &x);
 
 
 // Xử lý chuyển đổi

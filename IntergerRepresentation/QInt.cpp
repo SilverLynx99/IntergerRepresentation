@@ -1,4 +1,5 @@
 ﻿#include "QInt.h"
+#include "myLib.h"
 
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
@@ -31,48 +32,34 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 	return false;
 }
 
-void ScanQInt(int * ArrayDataQInt)
+void ScanQInt(QInt &x)
 {
+	//Sau khi tính xong mỗi số nguyên trong mảng QInt sẽ có số bit theo thứ tự của số lớn Number
 	string Number = "123456789798";
-	int BitSum = 0; // chứa 32 số bit
-	int Base10 = 0; // chứa số nguyên 4 byte
-	int CountArray = 0; // đếm phần tử mảng
-	int Count = 0; // đếm số bit trong trường hợp chưa đủ 32 bit
-	int stop = 0; // lệnh dừng trong trường hợp đi hết string Number nhưng chưa đủ 128 bit
-	for (int i = 1; i <= 128; i++)
+	unsigned int base10 = 0; // chứa số nguyên 4 byte
+	int count = 0; // đếm mỗi 32 bit
+	int index = 3; //Vị trí của mảng QInt
+
+	while (Number.compare("0") != 0)
 	{
-		Count++;
-		if (Number > "0")
+		if (count < 32)
 		{
-			BitSum = BitSum + pow(10, i - 1) * (Number % 2); // mỗi lần chia string Number cho 2 thì BitSum tăng 1 phần tử
+			base10 += Number % 2 * pow(2, count);  //Lấy phần dư nhân 2^count để cộng vào base 10
+			Number = Number / 2;
+			count++;
 		}
-		else
-			stop = 1;
-		if (i % 32 == 0 || stop == 1) // mỗi 32 bit hoặc có điều kiện dừng
+		else //Sau 32 bit sẽ lưu một số nguyên vào mảng QInt từ cuối lên đầu
 		{
-			int idx = 0;
-			int temp = 0;
-			while (idx < 32) // chuyển BitSum sang hệ 10
-			{
-				if (BitSum < 1) { // chạy hết BitSum
-					break;
-				}
-				temp = BitSum % 10;
-				BitSum = BitSum / 10;
-				Base10 += pow(2, idx) * temp;
-				idx++;
-			}
-			ArrayDataQInt[CountArray] = Base10; // đưa số nguyên 4byte vào mảng
-			CountArray++; // đếm đến phần tử mảng tiếp theo
-			Base10 = 0;
-			BitSum = 0;
-			Count = 0;
-			if (stop == 1) { // dừng vòng for khi string Number đã hết
-				break;
-			}
+			x.data[index--] = base10;
+			base10 = 0;
+			count = 0;
 		}
-		// Number / "2"; ??
 	}
+
+	//Trường hợp đã chia xong nhưng chưa đủ 32 bit 
+	//Lưu số nguyên đã tính được vô mảng QInt vị trí index
+	if (count < 32)
+		x.data[index] = base10;
 }
 
 bool *DecToBin(QInt x)
