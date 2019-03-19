@@ -79,7 +79,6 @@ bool *DecToBin(QInt x)
 {
 	// Allocate an array of bool (128B), every bool store a bit
 	bool *bitArray = new bool[128];
-	
 	for (int i = 0; i < 127; i++)
 		bitArray[i] = false;
 
