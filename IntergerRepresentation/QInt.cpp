@@ -44,7 +44,7 @@ void ScanQInt(int * ArrayDataQInt)
 		Count++;
 		if (Number > "0")
 		{
-//			BitSum = BitSum + pow(10, i - 1) * (Number % 2); // mỗi lần chia string Number cho 2 thì BitSum tăng 1 phần tử
+			BitSum = BitSum + pow(10, i - 1) * (Number % 2); // mỗi lần chia string Number cho 2 thì BitSum tăng 1 phần tử
 		}
 		else
 			stop = 1;
