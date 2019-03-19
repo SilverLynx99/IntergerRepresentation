@@ -43,3 +43,5 @@ char * BinToHex(bool *bit);
 // Chuyển đổi QInt sang Hex
 // Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
 char * DecToHex(QInt x);
+
+// abc

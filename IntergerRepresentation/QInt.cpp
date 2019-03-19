@@ -197,3 +197,5 @@ char * BinToHex(bool * bit)
 	return hexChar;
 }
 
+// hello
+
