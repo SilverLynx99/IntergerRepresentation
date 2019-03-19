@@ -20,7 +20,7 @@ struct QInt
 bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
 // Xử lý nhập liệu
-void ScanQInt(int *ArrayDataQInt);
+void ScanQInt(QInt & x);
 
 
 // Xử lý chuyển đổi

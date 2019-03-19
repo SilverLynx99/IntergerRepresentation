@@ -31,48 +31,42 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 	return false;
 }
 
-void ScanQInt(int * ArrayDataQInt)
+void ScanQInt(QInt & x)
 {
-	string Number = "123456789798";
-	int BitSum = 0; // chứa 32 số bit
-	int Base10 = 0; // chứa số nguyên 4 byte
+	// Đọc chuỗi từ màn hình
+	char * tempCharArray = new char[128];
+	scanf("%s", tempCharArray);
+
+	// Trong qua trinh chay se duoc xu ly luon
+
+
+	unsigned int Base10 = 0; // chứa số nguyên 4 byte
 	int CountArray = 0; // đếm phần tử mảng
-	int Count = 0; // đếm số bit trong trường hợp chưa đủ 32 bit
-	int stop = 0; // lệnh dừng trong trường hợp đi hết string Number nhưng chưa đủ 128 bit
+	int CountBit = 0;
 	for (int i = 1; i <= 128; i++)
 	{
-		Count++;
 		if (Number > "0")
 		{
-//			BitSum = BitSum + pow(10, i - 1) * (Number % 2); // mỗi lần chia string Number cho 2 thì BitSum tăng 1 phần tử
+			Base10 += pow(2, CountBit) * (Number % 2); // tính ra số dư của nó
+			CountBit++;
+			if (i % 32 == 0)
+			{
+				ArrayDataQInt[CountArray] = Base10; // đưa số nguyên 4byte vào mảng
+				CountArray++; // đếm đến phần tử mảng tiếp theo
+				Base10 = 0;
+				CountBit = 0;
+			}
 		}
 		else
-			stop = 1;
-		if (i % 32 == 0 || stop == 1) // mỗi 32 bit hoặc có điều kiện dừng
 		{
-			int idx = 0;
-			int temp = 0;
-			while (idx < 32) // chuyển BitSum sang hệ 10
-			{
-				if (BitSum < 1) { // chạy hết BitSum
-					break;
-				}
-				temp = BitSum % 10;
-				BitSum = BitSum / 10;
-				Base10 += pow(2, idx) * temp;
-				idx++;
-			}
 			ArrayDataQInt[CountArray] = Base10; // đưa số nguyên 4byte vào mảng
-			CountArray++; // đếm đến phần tử mảng tiếp theo
-			Base10 = 0;
-			BitSum = 0;
-			Count = 0;
-			if (stop == 1) { // dừng vòng for khi string Number đã hết
-				break;
-			}
+			break;
 		}
-		// Number / "2"; ??
+		Number = Number / 2;
 	}
+
+	delete[]tempCharArray;
+
 }
 
 bool *DecToBin(QInt x)
@@ -199,37 +193,8 @@ char * BinToHex(bool * bit)
 
 char * DecToHex(QInt x)
 {
-	// Cấp phát vùng nhớ để lưu chuỗi Hex
-	char *hexChar = new char[33];
-
-	// Đánh dấu kết thúc chuỗi
-	hexChar[32] = '\0';
-
-	int tempSum;
-	int heSoNhan[] = { 1, 2, 4, 8 };
-	int tempInt;
-
-	// Duyệt trên khối int
-	for (int i = 0; i < 4; i++)
-	{
-		tempInt = x.data[i];
-
-		for (int j = 0; j < 32;)
-		{
-			// Biến tạm tính tổng
-			tempSum = 0;
-
-			for (int k = 0; k < 4; k++)
-			{
-				if (tempInt & 1) tempSum += heSoNhan[j];
-				tempInt >>= 1;
-				j++;
-			}
-
-			// Đẩy ký tự vào mảng char
-			hexChar[((i + 1) * j - 1) / 4] = arrOfHexCode[tempSum];
-		}
-	}
-
-	return hexChar;
+	bool * ptrBool = DecToBin(x);
+	char *ptrHexCode = BinToHex(ptrBool);
+	delete[]ptrBool;
+	return ptrHexCode;
 }
