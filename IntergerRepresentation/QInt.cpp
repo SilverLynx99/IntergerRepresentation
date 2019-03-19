@@ -84,7 +84,6 @@ bool *DecToBin(QInt x)
 	for (int i = 0; i < 127; i++)
 		bitArray[i] = false;
 
-	// hello1
 	// Biến tạm
 	int temp, iterOnbitArray = 1;
 
