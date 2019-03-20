@@ -36,6 +36,7 @@ void ScanQInt(QInt &x)
 {
 	//Sau khi tính xong mỗi số nguyên trong mảng QInt sẽ có số bit theo thứ tự của số lớn Number
 	string Number = "123456789798";
+	
 	unsigned int base10 = 0; // chứa số nguyên 4 byte
 	int count = 0; // đếm mỗi 32 bit
 	int index = 3; //Vị trí của mảng QInt
@@ -60,6 +61,74 @@ void ScanQInt(QInt &x)
 	//Lưu số nguyên đã tính được vô mảng QInt vị trí index
 	if (count < 32)
 		x.data[index] = base10;
+}
+
+void ScanQIntBin(QInt &x)
+{
+	string NumberBit = "10110001100100011110011110011111000111110001111110000111100001";
+
+	unsigned int base10 = 0; // chứa số nguyên 4 byte
+	int count = 0; // đếm mỗi 32 bit
+	int index = 3; //Vị trí của mảng QInt
+	int i, size = NumberBit.length() - 1;
+	for (i = size; i >= 0; i--)
+	{
+		if (count < 32)
+		{
+			base10 += NumberBit[i] * pow(2, count);  //Lấy phần dư nhân 2^count để cộng vào base 10
+			count++;
+		}
+		else //Sau 32 bit sẽ lưu một số nguyên vào mảng QInt từ cuối lên đầu
+		{
+			x.data[index--] = base10;
+			base10 = 0;
+			count = 0;
+		}
+	}
+
+	//Trường hợp đã chia xong nhưng chưa đủ 32 bit 
+	//Lưu số nguyên đã tính được vô mảng QInt vị trí index
+	if (count < 32)
+		x.data[index] = base10;
+}
+
+void ScanQIntHex(QInt &x)
+{
+	string NumberHex = "40F";
+	//Tạo 2 chuỗi để đổi từ hex sang bin qua thuật toán đổi từ kí tự sang bin rồi ghép lại
+	string hex = "0123456789ABCDEF";
+	vector<string> hexToBIn = { "0000", "0001","0010" ,"0011" ,"0100" ,"0101" ,
+		"0110" ,"0111" ,"1000" ,"1001" ,"1010" ,"1011" ,"1100" ,"1101", "1110", "1111" };
+
+	int i, index, size = NumberHex.length() - 1;
+	int j, index2 = 3, count = 0;
+	unsigned int base10 = 0;
+	//Duyệt từ cuối lên đầu của chuỗi NumberHex
+	for (i = size; i >= 0; i--)
+	{
+		//Tìm vị trí chuỗi NumberHex trong chuỗi hex
+		//Vị trí này cũng chính là vị trí nhị phân trong mảng chuỗi hexToBin
+		index = hex.find(NumberHex[i]);
+
+		//Chạy từ cuối lên đầu chuỗi nhị phân 4 kí tự trong mảng chuỗi hexToBin
+		for (j = 3; j >= 0; j--)
+		{
+			if (count < 32)
+			{
+				base10 += (hexToBIn[index][j] - '0') * pow(2, count);
+				count++;
+			}
+			else //Sau 32 bit cập nhật vào data của QInt
+			{
+				x.data[index2--] = base10;
+				count = 0;
+				base10 = 0;
+			}
+		}
+	}
+
+	if (count < 32)
+		x.data[index2] = base10;
 }
 
 bool *DecToBin(QInt x)

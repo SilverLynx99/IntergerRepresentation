@@ -19,6 +19,8 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
 // Xử lý nhập liệu
 void ScanQInt(QInt &x);
+void ScanQIntBin(QInt &x);
+void ScanQIntHex(QInt &x);
 
 
 // Xử lý chuyển đổi
