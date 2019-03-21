@@ -44,4 +44,13 @@ char * BinToHex(bool *bit);
 // Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
 char * DecToHex(QInt x);
 
-// abc
+QInt operator+( QInt a,QInt b);
+QInt operator-(QInt a, QInt b);
+QInt operator*(QInt a, QInt b);
+QInt operator/(QInt a, QInt b);
+QInt ShiftLeft(QInt &a);
+QInt ShiftLeft1(QInt &a);
+QInt ShiftLeftChia(QInt &a,QInt &b);
+QInt ShiftRight(QInt&a);
+//const QInt operator=(const QInt &a);
+
