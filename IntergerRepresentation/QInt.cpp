@@ -1,6 +1,7 @@
 ﻿#include "QInt.h"
 #include "myLib.h"
 
+// heloo.o
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// How to write
