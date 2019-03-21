@@ -10,6 +10,8 @@ struct QInt
 {
 	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
 	// đi từ trái qua phải
+
+	// Bit là bit dấu. Số âm viết ở dạng bù 2.
 	int data[4] = { 0 };
 };
 
@@ -33,6 +35,15 @@ bool *DecToBin(QInt x);
 // WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
 // LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
 QInt BinToDec(bool *bit);
+
+// Chuyển đỗi dãy nhị phân thành mã hex
+// Output: một chuỗi hex có 32 ký tự, có cả ký tự '0'
+char * BinToHex(bool *bit);
+
+// Chuyển đổi QInt sang Hex
+// Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
+char * DecToHex(QInt x);
+
 QInt operator+( QInt a,QInt b);
 QInt operator-(QInt a, QInt b);
 QInt operator*(QInt a, QInt b);
@@ -42,3 +53,4 @@ QInt ShiftLeft1(QInt &a);
 QInt ShiftLeftChia(QInt &a,QInt &b);
 QInt ShiftRight(QInt&a);
 //const QInt operator=(const QInt &a);
+
