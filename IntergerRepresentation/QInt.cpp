@@ -133,11 +133,6 @@ QInt operator+(QInt a, QInt b)
 	QInt kq;
 	for (int p = 3; p >=0; p--)
 	{
-		/*if (temp == 1)
-		{
-			a.data[p]++;
-		}
-		*/
 		for (int k = 32; k >=1; k--)
 		{
 			i = (b.data[p] >> 32 - k) & 1;
@@ -160,12 +155,6 @@ QInt operator+(QInt a, QInt b)
 					kq.data[p] = kq.data[p] | (1 << (32 - k));
 					temp = 0;
 				}
-				/*if (i == 0 && j == 0)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
-					temp = 0;
-				}
-				*/
 			}
 			else
 			{
@@ -176,12 +165,10 @@ QInt operator+(QInt a, QInt b)
 				}
 				if (i == 1 && j == 0)
 				{
-					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
 					temp = 1;
 				}
 				if (i == 0 && j == 1)
 				{
-					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
 					temp = 1;
 				}
 				if (i == 0 && j == 0)
@@ -193,20 +180,16 @@ QInt operator+(QInt a, QInt b)
 		}
 		cout <<endl;
 	}
-	//cout<<(1<<31)
-	//cout << kq.data[3]<<endl;
-	//cout << kq.data[2];
 	return kq;
 }
 
 QInt operator-(QInt a, QInt b)
 {
-	int i = b.data[3];
-	int j = a.data[3], temp = 0;
+	int i = a.data[3];
+	int j = b.data[3], temp = 0;
 	QInt kq;
 	for (int p = 3; p >= 0; p--)
 	{
-		
 		for (int k = 32; k >= 1; k--)
 		{
 			i = (a.data[p] >> 32 - k) & 1;
@@ -214,11 +197,7 @@ QInt operator-(QInt a, QInt b)
 
 			if (temp == 0)
 			{
-				if (i == 1 && j == 1)
-				{
-					//temp = 1;
-
-				}
+			
 				if (i == 1 && j == 0)
 				{
 					kq.data[p] = kq.data[p] | (1 << (32 - k));
@@ -229,12 +208,6 @@ QInt operator-(QInt a, QInt b)
 				kq.data[p] = kq.data[p] | (1 << (32 - k));
 				temp = 1;
 				}
-				/*if (i == 0 && j == 0)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
-					temp = 0;
-				}
-				*/
 			}
 			else
 			{
@@ -245,12 +218,10 @@ QInt operator-(QInt a, QInt b)
 			}
 			if (i == 1 && j == 0)
 			{
-				//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
 				temp = 0;
 			}
 			if (i == 0 && j == 1)
 			{
-				//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
 				temp = 1;
 			}
 			if (i == 0 && j == 0)
@@ -263,12 +234,7 @@ QInt operator-(QInt a, QInt b)
 		cout << endl;
 
 	}
-	//cout<<(1<<31)
-	/*cout << kq.data[3] << endl;
-	cout << kq.data[2];
-	cout << kq.data[1];
-	cout << kq.data[0];
-	*/
+	
 	return kq;
 }
 
@@ -319,45 +285,46 @@ QInt ShiftLeft1(QInt & a)
 		a.data[3] = a.data[3] << 1;
 		if ((a.data[2] >> 31 & 1) == 1)
 		{
-			a.data[2] = a.data[2] << 1;
-			if ((a.data[1] >> 31 & 1) == 1)
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[1] = a.data[1] | 1;
-				a.data[0] = a.data[0] << 1;
-				a.data[0] = a.data[0] | 1;
-			}
-			else
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[1] = a.data[1] | 1;
-				a.data[0] = a.data[0] << 1;
-			}
+a.data[2] = a.data[2] << 1;
+if ((a.data[1] >> 31 & 1) == 1)
+{
+	a.data[1] = a.data[1] << 1;
+	a.data[1] = a.data[1] | 1;
+	a.data[0] = a.data[0] << 1;
+	a.data[0] = a.data[0] | 1;
+}
+else
+{
+	a.data[1] = a.data[1] << 1;
+	a.data[1] = a.data[1] | 1;
+	a.data[0] = a.data[0] << 1;
+}
 		}
 		else
 		{
-			a.data[2] = a.data[2] << 1;
-			if ((a.data[1] >> 31 & 1) == 1)
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[0] = a.data[0] << 1;
-				a.data[0] = a.data[0] | 1;
-			}
-			else
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[0] = a.data[0] << 1;
-			}
+		a.data[2] = a.data[2] << 1;
+		if ((a.data[1] >> 31 & 1) == 1)
+		{
+			a.data[1] = a.data[1] << 1;
+			a.data[0] = a.data[0] << 1;
+			a.data[0] = a.data[0] | 1;
+		}
+		else
+		{
+			a.data[1] = a.data[1] << 1;
+			a.data[0] = a.data[0] << 1;
+		}
 		}
 	}
-	
-	
+
+
 	return QInt();
 }
 
-QInt ShiftLeftChia(QInt & b,QInt &a)
+QInt ShiftLeftChia(QInt & b, QInt &a)
 {
-	if ((a.data[0] >> 31 & 1)==1)
+
+	if ((a.data[0] >> 31 & 1) == 1)
 	{
 		ShiftLeft1(b);
 		b.data[3] = b.data[3] | 1;
@@ -371,25 +338,6 @@ QInt ShiftLeftChia(QInt & b,QInt &a)
 	return QInt();
 }
 
-/*QInt ShiftRight(QInt & a)
-{
-	if((a.data[0] & 1) == 1)
-	{
-		a.data[1] = a.data[1] | 1 << 31;
-	}
-	if((a.data[1] & 1) == 1)
-	{
-		a.data[2] = a.data[2] | 1 << 31;
-	}
-	if((a.data[2] & 1) == 1)
-	{
-		a.data[3] = a.data[3] | 1 << 31;
-	}
-	return a;
-}
-*/
-
-
 QInt operator*(QInt a, QInt b)
 {
 	QInt kq;
@@ -399,9 +347,9 @@ QInt operator*(QInt a, QInt b)
 
 		for (int k = 32; k >= 1; k--)
 		{
-			if ((b.data[p] >> (32 - k)&1) == 1)
+			if ((b.data[p] >> (32 - k) & 1) == 1)
 			{
-				kq  =(kq + tam);
+				kq = (kq + tam);
 				ShiftLeft1(tam);
 			}
 			else
@@ -413,11 +361,22 @@ QInt operator*(QInt a, QInt b)
 	return kq;
 }
 
-/*QInt operator/(QInt a, QInt b)
+QInt operator/(QInt a, QInt b)
 {
-	QInt kq=a;
 	QInt tam;
-	if (a.data[0] >> 31 & 1 == 1)
+	if(( ((a.data[0] >> 31) & 1) == 1) &&( ((b.data[0] >> 31) & 1) == 1))
+	{
+		a = tam - a;
+		b = tam - b;
+	}
+	if ((((a.data[0] >> 31) & 1) == 0) && (((b.data[0] >> 31) & 1) == 1))
+	{
+		a = tam - a;
+		b = tam - b;
+	}
+	QInt kq = a;
+	
+	if (((a.data[0] >> 31) & 1) == 1)
 	{
 		for (int i = 0; i < 3; i++)
 		{
@@ -427,17 +386,20 @@ QInt operator*(QInt a, QInt b)
 	int k = 128;
 	while (k > 0)
 	{
-		QInt tam1;
 		ShiftLeftChia(tam, kq);
-		tam1 = tam - b;
-		if (tam1.data[0] >> 31 & 1 == 0)
+		tam = tam - b;
+		if( ((tam.data[0] >> 31) & 1) == 0)
 		{
-			kq.data[3] = kq.data[3] | 1;
-			tam = tam - b;
+			kq.data[3] = kq.data[3] | 1;	
+			cout << "voai";
+		}
+		else
+		{
+			tam = tam + b;
 		}
 		k--;
 	}
-	//cout << tam.data[3]<<endl;
+	cout << endl<<tam.data[3]<<endl;
 	return kq;
 }
 

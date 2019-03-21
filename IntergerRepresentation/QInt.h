@@ -37,8 +37,5 @@ QInt operator+( QInt a,QInt b);
 QInt operator-(QInt a, QInt b);
 QInt operator*(QInt a, QInt b);
 QInt operator/(QInt a, QInt b);
-QInt ShiftLeft(QInt &a);
 QInt ShiftLeft1(QInt &a);
 QInt ShiftLeftChia(QInt &a,QInt &b);
-QInt ShiftRight(QInt&a);
-//const QInt operator=(const QInt &a);
