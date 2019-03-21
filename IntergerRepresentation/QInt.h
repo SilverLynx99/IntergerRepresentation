@@ -35,3 +35,13 @@ bool *DecToBin(QInt x);
 // WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
 // LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
 QInt BinToDec(bool *bit);
+
+
+struct Qfloat
+{
+	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
+	// đi từ trái qua phải
+	unsigned int Data[4] = { 0 };
+};
+
+void ScanQfloat(Qfloat &x);

@@ -1,7 +1,7 @@
 ﻿#include "QInt.h"
 #include "myLib.h"
 
-// heloo.o
+
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// How to write
@@ -110,7 +110,7 @@ void ScanQIntHex(QInt &x)
 		//Tìm vị trí chuỗi NumberHex trong chuỗi hex
 		//Vị trí này cũng chính là vị trí nhị phân trong mảng chuỗi hexToBin
 		index = hex.find(NumberHex[i]);
-
+		 
 		//Chạy từ cuối lên đầu chuỗi nhị phân 4 kí tự trong mảng chuỗi hexToBin
 		for (j = 3; j >= 0; j--)
 		{
@@ -181,4 +181,50 @@ QInt BinToDec(bool * bit)
 	}
 
 	return tempStorage;
+}
+
+
+void ScanQfloat(Qfloat &x)
+{
+	string NumberFloat = "-8123124.1241290294112903";
+	string DECint;
+	string DECfloat;
+	int bias = pow(2,14) - 1;
+	int Change = 0;
+	int SizeDECint = 0;
+	int SizeDECfloat = 0;
+	vector<int> BitInt;
+	vector<int>BitFloat;
+	int base10 = 0;
+	int SignBit = 0;
+	for (int i = 0; i < NumberFloat.size(); i++)
+	{
+		if (NumberFloat[i] == '-')
+		{
+			SignBit = 1;
+			continue;
+		}
+		if (NumberFloat[i] == '.')
+		{
+			Change = 1;
+			continue;
+		}
+		if (Change == 0)
+		{
+			DECint[SizeDECint] = NumberFloat[i];
+			SizeDECint++;
+		}
+		if (Change == 1)
+		{
+			DECfloat[SizeDECfloat] = NumberFloat[i];
+		}
+	}
+	while (DECint != "0")
+	{
+		int temp = DECint % 2;
+		BitInt.push_back(temp);
+		DECint = DECint / 2;
+	}
+	int E = BitInt.size() - 1 + bias;
+
 }
