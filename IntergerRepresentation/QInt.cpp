@@ -1,5 +1,5 @@
 ﻿#include "QInt.h"
-#include "myLib.h"
+#include "UtilityFunc.h"
 
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
@@ -34,33 +34,70 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 
 void ScanQInt(QInt &x)
 {
-	//Sau khi tính xong mỗi số nguyên trong mảng QInt sẽ có số bit theo thứ tự của số lớn Number
-	string Number = "123456789798";
-	
-	unsigned int base10 = 0; // chứa số nguyên 4 byte
-	int count = 0; // đếm mỗi 32 bit
-	int index = 3; //Vị trí của mảng QInt
+	// Nhập chuỗi
+	string Number;
+	cin >> Number;
 
-	while (Number.compare("0") != 0)
+	bool sign = false; // True = số âm, false là dương
+
+	// Trường hợp chuỗi bit là âm
+	if (Number[0] == '-')
 	{
-		if (count < 32)
-		{
-			base10 += Number % 2 * pow(2, count);  //Lấy phần dư nhân 2^count để cộng vào base 10
-			Number = Number / 2;
-			count++;
-		}
-		else //Sau 32 bit sẽ lưu một số nguyên vào mảng QInt từ cuối lên đầu
-		{
-			x.data[index--] = base10;
-			base10 = 0;
-			count = 0;
-		}
+		// Bỏ dấu trừ
+		int len = Number.length();
+		for (int i = 0;
+			i < len; i++)
+			Number[i] = Number[i + 1];
+		
+		// Chỉnh kích thước về cho khít với số vừa nhận được
+		Number.resize(len - 1);
+		Number.shrink_to_fit();
+
+		// Ky hieu dau am
+		sign = true;
 	}
 
-	//Trường hợp đã chia xong nhưng chưa đủ 32 bit 
-	//Lưu số nguyên đã tính được vô mảng QInt vị trí index
-	if (count < 32)
-		x.data[index] = base10;
+	int count = 0; 
+	int temp; // biến tạm chứa chuỗi bit cần or
+
+	// Chia đến khi kq bằng 0
+	while (Number.compare("0") != 0)
+	{
+		// Nếu số dư bằng 1 thì bật bit tại vtri tương ứng
+		if (Number % 2 == 1)
+		{
+			temp = 1;
+			temp <<= (count % 32);
+			x.data[3 - (count / 32)] |= temp; // Or với temp để bật bit
+		}
+
+		Number = Number / 2;
+		count++;
+	}
+	
+	// Thực hiện chuyển đổi chuỗi bit dương thành âm, nếu số ban đầu là âm.
+	if (sign) {
+		// Tìm bit đầu tiên từ cuối lên đầu.
+		// How: Dịch bit của biến int sang phải và and với 1
+		int idOfData, // vị trí ô nhớ trong mảng "data"
+			numOfBit; // số lượng bit cần dịch
+
+		int i = 127;
+		do {
+			idOfData = i / 32;
+			numOfBit = 31 - (i % 32);
+			i--;
+		} while (!((x.data[idOfData] >> numOfBit) & 1));
+
+		// Thực hiện bù
+		// Bằng cách xor số int với số có bit được bật ở vtri numOfBit 
+		do {
+			i--;
+			idOfData = i / 32;
+			numOfBit = 31 - (i % 32); // Tính từ cuối lên đầu
+			x.data[idOfData] ^= (1 << numOfBit);
+		} while (i > 0);
+	}
 }
 
 void ScanQIntBin(QInt &x)
@@ -221,7 +258,7 @@ char * BinToHex(bool * bit)
 	// 34 ký tự bao gồm dấu và phần giá trị
 	char SL_CapPhat = 34;
 	char *hexChar = new char[SL_CapPhat];
-	
+
 	int tempSum;
 	int heSoNhan[] = { 1, 2, 4, 8 };
 
@@ -230,7 +267,7 @@ char * BinToHex(bool * bit)
 	{
 		// Biến tạm tính tổng
 		tempSum = 0;
-		
+
 		// Duyệt trên từng cụm 4bit để chuyển thành ký tự
 		for (int j = 0; j < 4; j++)
 		{
@@ -244,7 +281,7 @@ char * BinToHex(bool * bit)
 		// 1 vì có một bit dấu ở ô 0
 		hexChar[((i + 1) / 4) + 1] = arrOfHexCode[tempSum];
 	}
-	
+
 	// Đánh dấu kết thúc chuỗi
 	hexChar[SL_CapPhat - 1] = '\0';
 
@@ -255,10 +292,10 @@ char * BinToHex(bool * bit)
 	return hexChar;
 }
 
-char * DecToHex(QInt x)
-{
-	bool * ptrBool = DecToBin(x);
-	char *ptrHexCode = BinToHex(ptrBool);
-	delete[]ptrBool;
-	return ptrHexCode;
-}
+//char * DecToHex(QInt x)
+//{
+//	bool * ptrBool = DecToBin(x);
+//	char *ptrHexCode = BinToHex(ptrBool);
+//	delete[]ptrBool;
+//	return ptrHexCode;
+//}

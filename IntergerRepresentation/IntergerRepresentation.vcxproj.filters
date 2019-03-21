@@ -29,7 +29,7 @@
     <ClInclude Include="QInt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="myLib.h">
+    <ClInclude Include="UtilityFunc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

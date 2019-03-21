@@ -1,5 +1,6 @@
-﻿#include "myLib.h"
+﻿#include "UtilityFunc.h"
 
+//-------------- UTILITY FUNCTION --------------
 //Thêm số 0 vào chuỗi ngắn hơn cho bằng nhau
 void standard2String(string &s1, string &s2) 
 {
@@ -8,6 +9,27 @@ void standard2String(string &s1, string &s2)
 		s2.insert(0, l1 - l2, '0');
 	else 
 		s1.insert(0, l2 - l1, '0');
+}
+
+//Phép nhân số nguyên
+string mulWith1Int(string s1, int num)
+{
+	char n1;
+	string mul;
+	int i, mem = 0; //Phần nhớ
+
+	for (i = s1.length() - 1; i >= 0; i--)
+	{
+		n1 = s1[i];
+		mem = atoi(&n1)*num + mem; //Nhân từng chữ số của s1 với num cộng thêm phần nhớ
+		mul.insert(0, 1, mem % 10 + '0'); //Chèn kết quả vào đầu chuỗi mul, nó sẽ lần lượt đẩy các số xuống cuối chuỗi
+		mem /= 10;
+	}
+
+	if (mem != 0)
+		mul.insert(0, 1, mem + '0');
+
+	return mul;
 }
 
 //So sánh 2 số dạng chuỗi
@@ -30,8 +52,10 @@ int compare2String(const string &s1, const string &s2)
 		return 0;
 	}
 }
+//--------------
 
-//Phép cộng 2 số dạng chuỗi
+
+//-------------- BASIC FUNCTION --------------
 string operator +(string num1, string num2)
 {
 	standard2String(num1, num2);
@@ -58,8 +82,6 @@ string operator +(string num1, string num2)
 	return sum;
 }
 
-
-//Phép trừ ra kết quả là số dương
 string operator -(string num1, string num2) 
 {
 	standard2String(num1, num2);
@@ -110,62 +132,48 @@ string operator -(string num1, string num2)
 	return sub;
 }
 
-//Chia lấy phần nguyên
 string operator /(string num1, int num2)
 {
-	string div;
-	int index = 0;
+	string div; // Chuỗi chứa kq
+	int index = 0; // Vị trí duyệt trên mảng num1
+
 	//rs là kết quả từng phép chia nhỏ
+	// Bước khởi đầu: Lấy đủ ký tự lớn có giá trị lớn hơn số bị chia
+	// Nếu k đúng điều kiện, ta đến thẳng trường hợp div.length() = 0
 	int rs = num1[index] - '0';
 	while ((rs < num2) && (num1.length() != index))
 		rs = rs * 10 + (num1[++index] - '0');
 
 	//Chia lần lượt rs cho num2, sau một lần chia lấy thêm một đơn vị bên phải
-	while (num1.length() > index) //Độ dài chuỗi 1 vẫn lớn hơn index thì tiếp tục chia
+	while (num1.length() > index) // Dùng index để duyệt hết chuỗi.
 	{
 		//Nối từng kết quả chia được vào chuỗi div
+		// Dùng phép chia của C để lấy phần nguyên
 		div += (rs / num2) + '0';
 
 		//Lấy đơn vị tiếp theo
 		rs = (rs % num2) * 10 + (num1[++index] - '0');
 	}
 
+	// Trường hợp 
 	if (div.length() == 0)
 		return "0";
 	
 	return div;
 }
 
-//Chia lấy phần dư
 int operator %(string num1, int num2)
 {
 	string mod = num1 / num2;
+
+	// CẦN COMMENT
 	char temp[3];
 	_itoa(num2, temp, 10);
-	mod = num1 - mod * temp;
+
+	mod = num1 - (mod * temp);
+
+	// CẦN COMMENT
 	return atoi(mod.c_str());
-}
-
-
-//Phép nhân số nguyên
-string mulWith1Int(string s1, int num)
-{
-	char n1;
-	string mul;
-	int i, mem = 0; //Phần nhớ
-
-	for (i = s1.length() - 1; i >= 0; i--)
-	{
-		n1 = s1[i];
-		mem = atoi(&n1)*num + mem; //Nhân từng chữ số của s1 với num cộng thêm phần nhớ
-		mul.insert(0, 1, mem % 10 + '0'); //Chèn kết quả vào đầu chuỗi mul, nó sẽ lần lượt đẩy các số xuống cuối chuỗi
-		mem /= 10;
-	}
-
-	if (mem != 0)
-		mul.insert(0, 1, mem + '0');
-
-	return mul;
 }
 
 string operator *(string num1, string num2)
@@ -183,3 +191,4 @@ string operator *(string num1, string num2)
 
 	return mul;
 }
+//--------------
