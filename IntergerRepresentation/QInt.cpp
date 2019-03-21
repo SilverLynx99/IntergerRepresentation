@@ -167,12 +167,13 @@ QInt BinToDec(bool * bit)
 {
 	QInt tempStorage;
 
-	// Biến tạm
+	// Biến lưu lại chuỗi bit để thực hiện phép OR
 	int bitforOR;
 
 	// Duyệt trên mảng bool.
-	for (int iterOnBit = 70; iterOnBit <= 127; iterOnBit++)
+	for (int iterOnBit = 0; iterOnBit <= 127; iterOnBit++)
 	{
+		// Nếu đúng, bật bit tại đúng vị trí của tempStorage
 		if (bit[iterOnBit]) {
 			bitforOR = (1 << (31 - (iterOnBit % 32)));
 			tempStorage.data[iterOnBit / 32] |= bitforOR;
@@ -180,4 +181,84 @@ QInt BinToDec(bool * bit)
 	}
 
 	return tempStorage;
+}
+
+// Mảng được tạo để truy xuất ký tự hexa
+char arrOfHexCode[] = { '0', '1', '2', '3',
+						'4', '5', '6', '7',
+						'8', '9', 'A', 'B',
+						'C', 'D', 'E', 'F' };
+char * BinToHex(bool * bit)
+{
+	// Tạo một mảng bit phụ
+	bool *tempBit = new bool[128];
+	for (int i = 0; i < 128; i++) {
+		tempBit[i] = bit[i];
+	}
+
+	// Số dương : sign = false, dương sign = true
+	bool sign = false;
+
+	// Nếu là số âm, thực hiện bù 2 phần đuôi
+	if (tempBit[0]) {
+		// tìm bit 1 đầu tiên từ cuối
+		int i = 127;
+		while (!tempBit[i]) {
+			i--;
+		}
+
+		// Thực hiện bù
+		do {
+			i--;
+			tempBit[i] = !tempBit[i];
+		} while (i > 0);
+
+		// Đánh dấu chuỗi bit này là chuỗi âm
+		sign = true;
+	}
+
+	// Cấp phát vùng nhớ để lưu chuỗi Hex
+	// 34 ký tự bao gồm dấu và phần giá trị
+	char SL_CapPhat = 34;
+	char *hexChar = new char[SL_CapPhat];
+	
+	int tempSum;
+	int heSoNhan[] = { 1, 2, 4, 8 };
+
+	// Duyệt trên mảng tempBit
+	for (int i = 127; i >= 0;)
+	{
+		// Biến tạm tính tổng
+		tempSum = 0;
+		
+		// Duyệt trên từng cụm 4bit để chuyển thành ký tự
+		for (int j = 0; j < 4; j++)
+		{
+			if (tempBit[i])	tempSum += heSoNhan[j];
+			i--;
+		}
+
+		// Đẩy ký tự vào mảng char. 
+		// Biểu thức (i + 1) / 4 để tính vị trí để 
+		// lưu ký tự vào mảng hex, và được cộng thêm
+		// 1 vì có một bit dấu ở ô 0
+		hexChar[((i + 1) / 4) + 1] = arrOfHexCode[tempSum];
+	}
+	
+	// Đánh dấu kết thúc chuỗi
+	hexChar[SL_CapPhat - 1] = '\0';
+
+	// Chèn thêm dấu vào đầu chuỗi hex code
+	hexChar[0] = (sign ? '-' : '+');
+
+	delete[]tempBit;
+	return hexChar;
+}
+
+char * DecToHex(QInt x)
+{
+	bool * ptrBool = DecToBin(x);
+	char *ptrHexCode = BinToHex(ptrBool);
+	delete[]ptrBool;
+	return ptrHexCode;
 }
