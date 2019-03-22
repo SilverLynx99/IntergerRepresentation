@@ -1,6 +1,7 @@
 ﻿#include "QInt.h"
 #include "myLib.h"
 
+
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// How to write
@@ -150,7 +151,7 @@ void ScanQIntHex(QInt &x)
 		//Tìm vị trí chuỗi NumberHex trong chuỗi hex
 		//Vị trí này cũng chính là vị trí nhị phân trong mảng chuỗi hexToBin
 		index = hex.find(NumberHex[i]);
-
+		 
 		//Chạy từ cuối lên đầu chuỗi nhị phân 4 kí tự trong mảng chuỗi hexToBin
 		for (j = 3; j >= 0; j--)
 		{
@@ -222,3 +223,5 @@ QInt BinToDec(bool * bit)
 
 	return tempStorage;
 }
+
+
