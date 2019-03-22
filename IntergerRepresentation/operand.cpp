@@ -1,5 +1,6 @@
 ﻿#include "myLib.h"
 
+//Phần tình toán số nguyên
 //Thêm số 0 vào chuỗi ngắn hơn cho bằng nhau
 void standard2String(string &s1, string &s2) 
 {
@@ -182,4 +183,63 @@ string operator *(string num1, string num2)
 	}
 
 	return mul;
+}
+
+//Phần tính toán số thực
+REALNUM convertToRealNum(const string &s)
+{
+	REALNUM value;
+	int index = s.find('.');
+	value.point = s.length() - index - 1; //Lưu số chữ số thập phân.
+	value.num = s;
+	if (index != 0) //Khi có dâu thập phân mới xóa
+		value.num.erase(index, 1);
+	return value;
+}
+
+string convertToString(const REALNUM &num)
+{
+	string s;
+	s = num.num;
+	if (num.point != 0)
+	{
+		int index = num.num.length() - num.point; //Vị trí dấu thập phân
+		s.insert(index, 1, '.');
+	}
+	return s;
+}
+
+int max(int a, int b)
+{
+	return (a > b) ? a : b;
+}
+
+void standardRealNum(REALNUM &num1, REALNUM &num2) //Thêm số 0 vào cuối phần thập phân cho độ dài bằng nhau
+{
+	int maxPoint = max(num1.point, num2.point); //Tìm phần thập phân dài nhất
+	num1.num.insert(num1.num.length(), maxPoint - num1.point, '0'); //Chèn thêm số chữ số 0 cho bằng phần dài nhất
+	num2.num.insert(num2.num.length(), maxPoint - num2.point, '0');
+}
+
+string subReal(string num1, string num2)
+{
+	REALNUM sub, a, b;
+	a = convertToRealNum(num1);
+	b = convertToRealNum(num2);
+	standardRealNum(a, b);
+	sub.num = a.num - b.num; // Trừ số nguyên bình thường
+	sub.point = max(a.point, b.point); //phần thập phân của kết quả bằng phần thập phân lớn nhất trong 2 số
+	return convertToString(sub);
+}
+
+string mulReal(string num1, int num2)
+{
+	REALNUM mul, a, b;
+	char temp[3];
+	_itoa(num2, temp, 10);
+	a = convertToRealNum(num1);
+	b = convertToRealNum(temp);
+	mul.num = a.num*b.num; //Nhân số nguyên bình thường
+	mul.point = a.point + b.point; //Phần thập phân của kết quả bằng tổng phần thập phân của phân số
+	return convertToString(mul);
 }
