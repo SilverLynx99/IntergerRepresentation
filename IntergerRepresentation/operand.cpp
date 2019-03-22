@@ -1,7 +1,6 @@
 ﻿#include "myLib.h"
 
-// heloo1
-// hello2
+//Phần tình toán số nguyên
 //Thêm số 0 vào chuỗi ngắn hơn cho bằng nhau
 void standard2String(string &s1, string &s2) 
 {

@@ -35,18 +35,47 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 
 void ScanQInt(QInt &x)
 {
+	//Lưu số âm dưới dạng bù 2
 	//Sau khi tính xong mỗi số nguyên trong mảng QInt sẽ có số bit theo thứ tự của số lớn Number
-	string Number = "123456789798";
-	
+	string Number = "-123";
+
 	unsigned int base10 = 0; // chứa số nguyên 4 byte
 	int count = 0; // đếm mỗi 32 bit
 	int index = 3; //Vị trí của mảng QInt
+	int condition = 0; //0 nếu dương và 1 nếu âm
+	int mod, firstBit1 = 0; //Nếu tìm thấy bit 1 đầu tiên sẽ chuyển sang 1
+
+	if (Number[0] == '-')
+	{
+		condition = 1;
+		Number.erase(0, 1);
+		for (int i = 0; i < 4; i++)
+			x.data[i] = 4294967295;
+	}
 
 	while (Number.compare("0") != 0)
 	{
 		if (count < 32)
 		{
-			base10 += Number % 2 * pow(2, count);  //Lấy phần dư nhân 2^count để cộng vào base 10
+			mod = Number % 2;
+
+			//Nếu là số âm thì mới thực hiện các thao tác ở dưới
+			if (condition == 1)
+			{
+				if (firstBit1 == 1)
+				{
+					if (mod == 1)
+						mod = 0;
+					else
+						mod = 1;
+				}
+
+				//Tìm bit 1 đầu tiên từ phải sang
+				if ((mod == 1) && (firstBit1 == 0))
+					firstBit1 = 1; //Đổi trạng thái
+			}
+
+			base10 += mod * pow(2, count);  //Lấy phần dư nhân 2^count để cộng vào base 10
 			Number = Number / 2;
 			count++;
 		}
@@ -61,7 +90,19 @@ void ScanQInt(QInt &x)
 	//Trường hợp đã chia xong nhưng chưa đủ 32 bit 
 	//Lưu số nguyên đã tính được vô mảng QInt vị trí index
 	if (count < 32)
+	{
+		//Nếu là số âm và chưa hết 32 bit thì tiếp tục đổi những bit còn lại thành 1
+		if (condition == 1)
+		{
+			while (count < 32)
+			{
+				base10 += pow(2, count);
+				count++;
+			}
+		}
+
 		x.data[index] = base10;
+	}
 }
 
 void ScanQIntBin(QInt &x)
