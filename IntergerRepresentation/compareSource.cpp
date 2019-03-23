@@ -75,35 +75,31 @@ bool operator<(string s1, string s2)
 		return false;
 	else if (s1[0] == '0' && s2[0] == '0')
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return true;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return false;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 > cnt2)
-			return true;
-		else
-			return false;
 	}
 	else if (s1[0] == '1' && s2[0] == '1')
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return false;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return true;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 < cnt2)
-			return true;
-		else
-			return false;
 	}
 }
 
@@ -113,37 +109,33 @@ bool operator>(string s1, string s2)
 		return false;
 	else if (s1[0] == '0' && s2[0] == '1')
 		return true;
-	else if (s1[0] == '0' && s2[0] == '0')
+	else if (s1[0] == '0' && s2[0] == '0') //TH: 2 so DUONG
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return false;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return true;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 < cnt2)
-			return true;
-		else
-			return false;
 	}
-	else if (s1[0] == '1' && s2[0] == '1')
+	else if (s1[0] == '1' && s2[0] == '1') //TH: 2 so AM
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return true;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return false;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 > cnt2)
-			return true;
-		else
-			return false;
 	}
 }
 
@@ -155,35 +147,33 @@ bool operator<=(string s1, string s2)
 		return false;
 	else if (s1[0] == '0' && s2[0] == '0')
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return true;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return false;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 >= cnt2)
-			return true;
-		else
-			return false;
+		return true;
 	}
 	else if (s1[0] == '1' && s2[0] == '1')
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return false;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return true;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 <= cnt2)
-			return true;
-		else
-			return false;
+		return true;
 	}
 }
 
@@ -195,35 +185,33 @@ bool operator>=(string s1, string s2)
 		return true;
 	else if (s1[0] == '0' && s2[0] == '0')
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return false;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return true;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 <= cnt2)
-			return true;
-		else
-			return false;
+		return true;
 	}
 	else if (s1[0] == '1' && s2[0] == '1')
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt1 = 1;
+		while (cnt1 < 128)
 		{
+			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+				return true;
+			}
+			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+				return false;
+			}
 			cnt1++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 >= cnt2)
-			return true;
-		else
-			return false;
+		return true;
 	}
 }
 
@@ -233,37 +221,16 @@ bool operator==(string s1, string s2)
 		return false;
 	else if (s1[0] == '0' && s2[0] == '1')
 		return false;
-	else if (s1[0] == '0' && s2[0] == '0')
+	else
 	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
+		int cnt = 1;
+		while (cnt < 128)
 		{
-			cnt1++;
+			if (s1[cnt] != s2[cnt])
+				return false;
+			cnt++;
 		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 == cnt2)
-			return true;
-		else
-			return false;
-	}
-	else if (s1[0] == '1' && s2[0] == '1')
-	{
-		int cnt1 = 1, cnt2 = 1;
-		while (s1[cnt1] != '1')
-		{
-			cnt1++;
-		}
-		while (s2[cnt2] != '1')
-		{
-			cnt2++;
-		}
-		if (cnt1 == cnt2)
-			return true;
-		else
-			return false;
+		return true;
 	}
 }
 
