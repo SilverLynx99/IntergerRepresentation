@@ -190,10 +190,14 @@ REALNUM convertToRealNum(const string &s)
 {
 	REALNUM value;
 	int index = s.find('.');
-	value.point = s.length() - index - 1; //Lưu số chữ số thập phân.
 	value.num = s;
-	if (index != 0) //Khi có dâu thập phân mới xóa
+	if (index != -1) //Khi có dâu thập phân mới xóa
+	{
+		value.point = s.length() - index - 1; //Lưu số chữ số thập phân.
 		value.num.erase(index, 1);
+	}
+	else
+		value.point = 0;
 	return value;
 }
 
@@ -206,6 +210,20 @@ string convertToString(const REALNUM &num)
 		int index = num.num.length() - num.point; //Vị trí dấu thập phân
 		s.insert(index, 1, '.');
 	}
+
+	int n = s.length() - 1;
+	int count = 0; //Đếm số chữ số 0 sau cùng
+	while (s[n] == '0')
+	{
+		count++;
+		n--;
+	}
+
+	if (count == num.point)
+		s.erase(n + 1, count - 1);
+	else
+		s.erase(n + 1, count);
+
 	return s;
 }
 
