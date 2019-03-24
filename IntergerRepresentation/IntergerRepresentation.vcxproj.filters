@@ -24,12 +24,18 @@
     <ClCompile Include="operand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QFloat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QInt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UtilityFunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QFloat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

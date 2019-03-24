@@ -1,6 +1,7 @@
 ﻿#include "QInt.h"
 #include "UtilityFunc.h"
 
+
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// How to write
