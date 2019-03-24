@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 
-
 using namespace std;
 struct QInt
 {
@@ -45,16 +44,43 @@ char * DecToHex(QInt x);
 // -- TÍNH TOÁN
 // Cộng 2 số QInt, xuất ra ngoài QInt. 
 // Không xử lý tràn số.
+
 QInt operator+( QInt a,QInt b);
-
-
 QInt operator-(QInt a, QInt b);
+
+// --> Nhật <--
 QInt operator*(QInt a, QInt b);
 QInt operator/(QInt a, QInt b);
-QInt operator<< (QInt a, int b);
-QInt operator>> (QInt a, int b);
+// --> Nhật <--
+
 
 // ---
+
+// -- SO SÁNH (PHÁT)
+bool operator<(const QInt &a,const QInt &b);
+bool operator>(const QInt &a,const QInt &b);
+bool operator>=(const QInt &a,const QInt &b);
+bool operator<=(const QInt &a,const QInt &b);
+bool operator==(const QInt &a,const QInt &b);
+//QInt operator=(QInt a,QInt b);
+
+
+//--------
+
+//-- TOÁN TỬ BIT 
+
+// --> Nhật <--
+QInt operator<< (const QInt &a, int b);
+QInt operator>> (const QInt &a, int b);
+// --> Nhật <--
+
+// --> Nhân <--
+QInt operator& (const QInt &a, int b);
+QInt operator| (const QInt &a, int b);
+QInt operator^ (const QInt &a, int b);
+QInt operator~ (const QInt &a);
+// --> Nhân <--
+
 
 
 //--- UTILITY FUNCTION FOR QINT

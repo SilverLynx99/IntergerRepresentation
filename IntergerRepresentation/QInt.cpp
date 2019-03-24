@@ -468,6 +468,71 @@ QInt operator-(QInt a, QInt b)
 	return a + b;
 }
 
+QInt operator*(QInt a, QInt b)
+{
+	return QInt();
+}
+
+QInt operator/(QInt a, QInt b)
+{
+	return QInt();
+}
+
+bool operator<(const QInt & a, const QInt & b)
+{
+	return false;
+}
+
+bool operator>(const QInt & a, const QInt & b)
+{
+	return false;
+}
+
+bool operator>=(const QInt & a, const QInt & b)
+{
+	return false;
+}
+
+bool operator<=(const QInt & a, const QInt & b)
+{
+	return false;
+}
+
+bool operator==(const QInt & a, const QInt & b)
+{
+	return false;
+}
+
+QInt operator<<(const QInt & a, int b)
+{
+	return QInt();
+}
+
+QInt operator>>(const QInt & a, int b)
+{
+	return QInt();
+}
+
+QInt operator&(const QInt & a, int b)
+{
+	return QInt();
+}
+
+QInt operator|(const QInt & a, int b)
+{
+	return QInt();
+}
+
+QInt operator^(const QInt & a, int b)
+{
+	return QInt();
+}
+
+QInt operator~(const QInt & a)
+{
+	return QInt();
+}
+
 void doiDau(QInt&inp)
 {
 	// Tìm bit 1 đầu tiên từ cuối lên đầu.
