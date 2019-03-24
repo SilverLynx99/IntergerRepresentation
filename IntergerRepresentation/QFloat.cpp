@@ -1,4 +1,5 @@
 ﻿#include "QFloat.h"
+#include "UtilityFunc.h"
 
 void ScanQfloat(Qfloat &x)
 {

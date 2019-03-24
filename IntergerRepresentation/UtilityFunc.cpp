@@ -193,6 +193,7 @@ string operator *(string num1, string num2)
 	return mul;
 }
 
+// -- SỐ THỰC
 //Phần tính toán số thực
 REALNUM convertToRealNum(const string &s)
 {
@@ -269,3 +270,6 @@ string mulReal(string num1, int num2)
 	mul.point = a.point + b.point; //Phần thập phân của kết quả bằng tổng phần thập phân của phân số
 	return convertToString(mul);
 }
+
+
+// ------------------

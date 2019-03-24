@@ -21,10 +21,10 @@
     <ClCompile Include="QInt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="operand.cpp">
+    <ClCompile Include="QFloat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QFloat.cpp">
+    <ClCompile Include="UtilityFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

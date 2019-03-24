@@ -23,3 +23,13 @@ string operator /(string num1, int num2);
 // Output: Kq (kiểu int)
 int operator %(string num1, int num2);
 
+// -- SỐ THỰC
+struct REALNUM
+{
+	string num;
+	int point;
+};
+
+string subReal(string num1, string num2);
+string mulReal(string num1, int num2);
+// ---

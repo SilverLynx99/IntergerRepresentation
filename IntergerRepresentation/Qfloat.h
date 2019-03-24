@@ -1,14 +1,13 @@
 ﻿#pragma once
-
+#include <string>
+#include <vector>
+#include <algorithm>
 
 struct Qfloat
 {
-	// Bit đầu - bit dấu
-	// 15 bit sau - bit exponent
-	// 122 cuối - bit fraction
-	// Lấy 1 nửa int đầu, phần còn lại là fraction
-	int data[4];
+	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
+	// đi từ trái qua phải
+	unsigned int Data[4] = { 0 };
 };
 
 void ScanQfloat(Qfloat &x);
-void PrintQfloat(Qfloat x);
