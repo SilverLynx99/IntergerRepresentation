@@ -1,8 +1,5 @@
 ﻿#include "UtilityFunc.h"
 
-//-------------- UTILITY FUNCTION --------------
-//Phần tình toán số nguyên
-//Thêm số 0 vào chuỗi ngắn hơn cho bằng nhau
 void standard2String(string &s1, string &s2) 
 {
 	int l1 = s1.length(), l2 = s2.length();
@@ -12,7 +9,6 @@ void standard2String(string &s1, string &s2)
 		s1.insert(0, l2 - l1, '0');
 }
 
-//Phép nhân số nguyên
 string mulWith1Int(string s1, int num)
 {
 	char n1;
@@ -33,7 +29,6 @@ string mulWith1Int(string s1, int num)
 	return mul;
 }
 
-//So sánh 2 số dạng chuỗi
 int compare2String(const string &s1, const string &s2)
 {
 	//-1 là bé hơn, 1 là lớn hơn, 0 là bằng nhau
@@ -53,10 +48,7 @@ int compare2String(const string &s1, const string &s2)
 		return 0;
 	}
 }
-//--------------
 
-
-//-------------- BASIC FUNCTION --------------
 string operator +(string num1, string num2)
 {
 	standard2String(num1, num2);
@@ -193,8 +185,6 @@ string operator *(string num1, string num2)
 	return mul;
 }
 
-// -- SỐ THỰC
-//Phần tính toán số thực
 REALNUM convertToRealNum(const string &s)
 {
 	REALNUM value;
@@ -241,7 +231,7 @@ int max(int a, int b)
 	return (a > b) ? a : b;
 }
 
-void standardRealNum(REALNUM &num1, REALNUM &num2) //Thêm số 0 vào cuối phần thập phân cho độ dài bằng nhau
+void standardRealNum(REALNUM &num1, REALNUM &num2)
 {
 	int maxPoint = max(num1.point, num2.point); //Tìm phần thập phân dài nhất
 	num1.num.insert(num1.num.length(), maxPoint - num1.point, '0'); //Chèn thêm số chữ số 0 cho bằng phần dài nhất
@@ -271,5 +261,242 @@ string mulReal(string num1, int num2)
 	return convertToString(mul);
 }
 
-
-// ------------------
+//
+//void CopyBitHexaToBin(string &bit, string bitOfHexCode, int pos)
+//{
+//	int i;
+//	for (i = 3; i >= 0; i--)
+//	{
+//		bit[pos] = bitOfHexCode[i];
+//		pos--;
+//	}
+//}
+//
+//string HexToBin(string hex)
+//{
+//	string bit;
+//	bit.resize(128);
+//	int i;
+//	for (i = 0; i < 128; i++)
+//	{
+//		bit[i] = '0';
+//	}
+//	vector<string> listBitOfHexCode;
+//	listBitOfHexCode.push_back("0000");
+//	listBitOfHexCode.push_back("0001");
+//	listBitOfHexCode.push_back("0010");
+//	listBitOfHexCode.push_back("0011");
+//	listBitOfHexCode.push_back("0100");
+//	listBitOfHexCode.push_back("0101");
+//	listBitOfHexCode.push_back("0110");
+//	listBitOfHexCode.push_back("0111");
+//	listBitOfHexCode.push_back("1000");
+//	listBitOfHexCode.push_back("1001");
+//	listBitOfHexCode.push_back("1010");
+//	listBitOfHexCode.push_back("1011");
+//	listBitOfHexCode.push_back("1100");
+//	listBitOfHexCode.push_back("1101");
+//	listBitOfHexCode.push_back("1110");
+//	listBitOfHexCode.push_back("1111");
+//
+//	int j = hex.length() - 1;
+//	int lenOfBitHex = 128 - 4 * hex.length();
+//	for (i = 127; i >= lenOfBitHex; i -= 4)
+//	{
+//		if (hex[j] >= 48 && hex[j] <= 57)
+//		{
+//			CopyBitHexaToBin(bit, listBitOfHexCode[hex[j] - 48], i);
+//		}
+//		else if (hex[j] >= 65 && hex[j] <= 70)
+//		{
+//			CopyBitHexaToBin(bit, listBitOfHexCode[hex[j] - 55], i);
+//		}
+//		j = j - 1;
+//	}
+//
+//	return bit;
+//}
+//
+//void ConvertBinToString(bool *bit, string &x)
+//{
+//	x.resize(128);
+//	int i;
+//	for (i = 0; i < 128; i++)
+//	{
+//		if (bit[i] == false)
+//			x[i] = '0';
+//		else x[i] = '1';
+//	}
+//}
+//
+//bool operator<(string s1, string s2)
+//{
+//	if (s1[0] == '1' && s2[0] == '0')
+//		return true;
+//	else if (s1[0] == '0' && s2[0] == '1')
+//		return false;
+//	else if (s1[0] == '0' && s2[0] == '0')
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return true;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return false;
+//			}
+//			cnt1++;
+//		}
+//	}
+//	else if (s1[0] == '1' && s2[0] == '1')
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return false;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return true;
+//			}
+//			cnt1++;
+//		}
+//	}
+//}
+//
+//bool operator>(string s1, string s2)
+//{
+//	if (s1[0] == '1' && s2[0] == '0')
+//		return false;
+//	else if (s1[0] == '0' && s2[0] == '1')
+//		return true;
+//	else if (s1[0] == '0' && s2[0] == '0') //TH: 2 so DUONG
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return false;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return true;
+//			}
+//			cnt1++;
+//		}
+//	}
+//	else if (s1[0] == '1' && s2[0] == '1') //TH: 2 so AM
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return true;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return false;
+//			}
+//			cnt1++;
+//		}
+//	}
+//}
+//
+//bool operator<=(string s1, string s2)
+//{
+//	if (s1[0] == '1' && s2[0] == '0')
+//		return true;
+//	else if (s1[0] == '0' && s2[0] == '1')
+//		return false;
+//	else if (s1[0] == '0' && s2[0] == '0')
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return true;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return false;
+//			}
+//			cnt1++;
+//		}
+//		return true;
+//	}
+//	else if (s1[0] == '1' && s2[0] == '1')
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return false;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return true;
+//			}
+//			cnt1++;
+//		}
+//		return true;
+//	}
+//}
+//
+//bool operator>=(string s1, string s2)
+//{
+//	if (s1[0] == '1' && s2[0] == '0')
+//		return false;
+//	else if (s1[0] == '0' && s2[0] == '1')
+//		return true;
+//	else if (s1[0] == '0' && s2[0] == '0')
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return false;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return true;
+//			}
+//			cnt1++;
+//		}
+//		return true;
+//	}
+//	else if (s1[0] == '1' && s2[0] == '1')
+//	{
+//		int cnt1 = 1;
+//		while (cnt1 < 128)
+//		{
+//			if (s1[cnt1] == '0' && s2[cnt1] == '1') {
+//				return true;
+//			}
+//			else if (s1[cnt1] == '1' && s2[cnt1] == '0') {
+//				return false;
+//			}
+//			cnt1++;
+//		}
+//		return true;
+//	}
+//}
+//
+//bool operator==(string s1, string s2)
+//{
+//	if (s1[0] == '1' && s2[0] == '0')
+//		return false;
+//	else if (s1[0] == '0' && s2[0] == '1')
+//		return false;
+//	else
+//	{
+//		int cnt = 1;
+//		while (cnt < 128)
+//		{
+//			if (s1[cnt] != s2[cnt])
+//				return false;
+//			cnt++;
+//		}
+//		return true;
+//	}
+//}
+//
+///*const string operator=(const string &s1)
+//{
+//
+//}*/
