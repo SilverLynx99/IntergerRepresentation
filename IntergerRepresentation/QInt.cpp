@@ -1,33 +1,234 @@
 ﻿#include "QInt.h"
 #include "UtilityFunc.h"
 
+bool KiemTraOperator(vector<string> optList, string x)
+{
+	int i;
+	for (i = 0; i < optList.size(); i++)
+	{
+		if (x == optList[i])
+			return true;
+	}
+	return false;
+}
 
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// How to write
-	string p1, p2, ptemp, opt, opr1, opr2;
+	string p1, p2, opt, opr1, opr2, ptemp, ptemp2;
+	vector<string> optList = { "+", "-", "*", "/", "<", ">", "<=", ">=", "==", "=", "<<", ">>", "rol", "ror", "&", "|", "^", "~" };
 	while (!inputFile.eof())
 	{
-		p1 = "", p2 = "", ptemp = "", opt = "", opr1 = "", opr2 = "";
+		p1 = "", p2 = "", ptemp = "", ptemp2 = "", opt = "", opr1 = "", opr2 = "";
 		// Doc tung dong
 		inputFile >> p1;
 		inputFile >> ptemp;
 		if (ptemp == "2" || ptemp == "10" || ptemp == "16") // thuc hien phep chuyen doi giua cac HE
 		{
-			p2 = ptemp;
-			inputFile >> opr1;
-			//xu li dong tai day voi bien opr1 la toan hang duy nhat cua dong
-			/////////
+			inputFile >> ptemp2;
+			if (KiemTraOperator(optList, ptemp2) == false) //kiem tra neu ptemp2 khong la toan tu thi thuc hien doan sau
+			{
+				p2 = ptemp;
+				opr1 = ptemp2;
+				if ((p1 == "2") && (opr1.length() < 128))
+				{
+					string tmp;
+					int i = 0;
+					while (i < 128 - opr1.length())
+					{
+						tmp.push_back('0');
+						i++;
+					}
+					tmp += opr1;
+					opr1 = tmp;
+				}
+				//xu li dong tai day voi bien opr1 la toan hang duy nhat cua dong
+				if (p1 == "10" && p2 == "2")
+				{
+					//thuc hien chuyen doi DecToBin
+				}
+				else if (p1 == "2" && p2 == "10")
+				{
+					//thuc hien chuyen doi BinToDec
+				}
+				else if (p1 == "2" && p2 == "16")
+				{
+					//thuc hien chuyen doi BinToHex
+				}
+				else
+				{
+					//thuc hien chuyen doi DecToHex
+				}
+			}
+			else //neu ptemp2 la toan tu thi thuc hien doan sau
+			{
+				opr1 = ptemp;
+				opt = ptemp2;
+				inputFile >> opr2;
+				string tmp;
+				int i;
+				if ((p1 == "2") && (opr1.length() < 128))
+				{
+					tmp = "";
+					i = 0;
+					while (i < 128 - opr1.length())
+					{
+						tmp.push_back('0');
+						i++;
+					}
+					tmp += opr1;
+					opr1 = tmp;
+				}
+				if ((p1 == "2") && (opr2.length() < 128))
+				{
+					tmp = "";
+					i = 0;
+					while (i < 128 - opr2.length())
+					{
+						tmp.push_back('0');
+						i++;
+					}
+					tmp += opr2;
+					opr2 = tmp;
+				}
+			}
 		}
-		else //thuc hien cac phep tinh #
+		else //thuc hien doc tiep cac thong tin cua cac dong co toan tu (+, - , *, /, <, >, ...)
 		{
 			opr1 = ptemp; //copy ptemp vao opr1(toan hang thu 1)
 			inputFile >> opt; //doc toan tu
 			inputFile >> opr2; //doc toan hang thu 2
-			//xu li dong tai day voi 2 bien opr1, opr2 lan luot la 2 toan hang va opt la toan tu
-			////////
+			string tmp;
+			int i;
+			if ((p1 == "2") && (opr1.length() < 128))
+			{
+				tmp = "";
+				i = 0;
+				while (i < 128 - opr1.length())
+				{
+					tmp.push_back('0');
+					i++;
+				}
+				tmp += opr1;
+				opr1 = tmp;
+			}
+			if ((p1 == "2") && (opr2.length() < 128))
+			{
+				tmp = "";
+				i = 0;
+				while (i < 128 - opr2.length())
+				{
+					tmp.push_back('0');
+					i++;
+				}
+				tmp += opr2;
+				opr2 = tmp;
+			}
 		}
-
+		if (opt != "") //thuc hien cac dong co toan tu (+, -, *, /, <, >, ...)
+		{
+			if (opt == "+")
+			{
+				//thuc hien toan tu CONG
+			}
+			else if (opt == "-")
+			{
+				//thuc hien toan tu TRU
+			}
+			else if (opt == "*")
+			{
+				//thuc hien toan tu NHAN
+			}
+			else if (opt == "/")
+			{
+				//thuc hien toan tu CHIA
+			}
+			/*else if (opt == "<" || opt == ">" || opt == "<=" || opt == ">=" || opt == "==")
+			{
+				if (p1 == "10")
+				{
+					QInt s1, s2;
+					ScanQInt(s1, opr1);
+					ScanQInt(s2, opr2);
+					bool *ss1;
+					bool *ss2;
+					ss1 = DecToBin(s1);
+					ss2 = DecToBin(s2);
+					ConvertBinToString(ss1, opr1);
+					ConvertBinToString(ss2, opr2);
+				}
+				if (opt == "<")
+				{
+					//thuc hien so sanh BE HON
+					if (opr1 < opr2)
+						outputFile << "True\n";
+					else outputFile << "False\n";
+				}
+				else if (opt == ">")
+				{
+					//thuc hien so sanh LON HON
+					if (opr1 > opr2)
+						outputFile << "True\n";
+					else outputFile << "False\n";
+				}
+				else if (opt == "<=")
+				{
+					//thuc hien so sanh BE BANG
+					if (opr1 <= opr2)
+						outputFile << "True\n";
+					else outputFile << "False\n";
+				}
+				else if (opt == ">=")
+				{
+					//thuc hien so sanh LON BANG
+					if (opr1 >= opr2)
+						outputFile << "True\n";
+					else outputFile << "False\n";
+				}
+				else if (opt == "==")
+				{
+					//thuc hien so sanh BANG
+					if (opr1 == opr2)
+						outputFile << "True\n";
+					else outputFile << "False\n";
+				}
+			}*/
+			else if (opt == "&")
+			{
+				//thuc hien toan tu AND
+			}
+			else if (opt == "|")
+			{
+				//thuc hien toan tu OR
+			}
+			else if (opt == "^")
+			{
+				//thuc hien toan tu XOR
+			}
+			else if (opt == "~")
+			{
+				//thuc hien toan tu NOT
+			}
+			else if (opt == "<<")
+			{
+				//thuc hien toan tu DICH TRAI
+			}
+			else if (opt == ">>")
+			{
+				//thuc hien toan tu DICH PHAI
+			}
+			else if (opt == "rol")
+			{
+				//thuc hien toan tu XOAY TRAI
+			}
+			else if (opt == "ror")
+			{
+				//thuc hien toan tu XOAY PHAI
+			}
+		}
+		
+		//cout << p1 << "\n" << p2 << "\n" << opr1 << "\n" << opt << "\n" << opr2;
+		//cout << "\n\n";
 	}
 
 	return false;
