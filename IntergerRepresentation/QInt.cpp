@@ -50,7 +50,7 @@ void ScanQInt(QInt &x)
 		sign = true;
 	}
 
-	int count = 0; 
+	int count = 0;
 	int temp; // biến tạm chứa chuỗi bit cần or
 
 	// Chia đến khi kq bằng 0
@@ -67,98 +67,11 @@ void ScanQInt(QInt &x)
 		Number = Number / 2;
 		count++;
 	}
-	
+
 	// Thực hiện chuyển đổi chuỗi bit dương thành âm, nếu số ban đầu là âm.
 	if (sign) {
-		// Tìm bit 1 đầu tiên từ cuối lên đầu.
-		// How: Dịch bit của biến int sang phải và and với 1
-		int idOfData, // vị trí ô nhớ trong mảng "data"
-			numOfBit; // số lượng bit cần dịch
-
-		int i = 127;
-		do {
-			idOfData = i / 32;
-			numOfBit = 31 - (i % 32);
-			i--;
-		} while (!((x.data[idOfData] >> numOfBit) & 1));
-
-		// Thực hiện bù
-		// Bằng cách xor số int với số có bit được bật ở vtri numOfBit 
-		do {
-			i--;
-			idOfData = i / 32;
-			numOfBit = 31 - (i % 32); // Tính từ cuối lên đầu
-			x.data[idOfData] ^= (1 << numOfBit);
-		} while (i > 0);
+		doiDau(x);
 	}
-}
-
-void ScanQIntBin(QInt &x)
-{
-	string NumberBit = "10110001100100011110011110011111000111110001111110000111100001";
-
-	unsigned int base10 = 0; // chứa số nguyên 4 byte
-	int count = 0; // đếm mỗi 32 bit
-	int index = 3; //Vị trí của mảng QInt
-	int i, size = NumberBit.length() - 1;
-	for (i = size; i >= 0; i--)
-	{
-		if (count < 32)
-		{
-			base10 += NumberBit[i] * pow(2, count);  //Lấy phần dư nhân 2^count để cộng vào base 10
-			count++;
-		}
-		else //Sau 32 bit sẽ lưu một số nguyên vào mảng QInt từ cuối lên đầu
-		{
-			x.data[index--] = base10;
-			base10 = 0;
-			count = 0;
-		}
-	}
-
-	//Trường hợp đã chia xong nhưng chưa đủ 32 bit 
-	//Lưu số nguyên đã tính được vô mảng QInt vị trí index
-	if (count < 32)
-		x.data[index] = base10;
-}
-
-void ScanQIntHex(QInt &x)
-{
-	string NumberHex = "40F";
-	//Tạo 2 chuỗi để đổi từ hex sang bin qua thuật toán đổi từ kí tự sang bin rồi ghép lại
-	string hex = "0123456789ABCDEF";
-	vector<string> hexToBIn = { "0000", "0001","0010" ,"0011" ,"0100" ,"0101" ,
-		"0110" ,"0111" ,"1000" ,"1001" ,"1010" ,"1011" ,"1100" ,"1101", "1110", "1111" };
-
-	int i, index, size = NumberHex.length() - 1;
-	int j, index2 = 3, count = 0;
-	unsigned int base10 = 0;
-	//Duyệt từ cuối lên đầu của chuỗi NumberHex
-	for (i = size; i >= 0; i--)
-	{
-		//Tìm vị trí chuỗi NumberHex trong chuỗi hex
-		//Vị trí này cũng chính là vị trí nhị phân trong mảng chuỗi hexToBin
-		index = hex.find(NumberHex[i]);
-
-		//Chạy từ cuối lên đầu chuỗi nhị phân 4 kí tự trong mảng chuỗi hexToBin
-		for (j = 3; j >= 0; j--)
-		{
-			if (count < 32)
-			{
-				base10 += (hexToBIn[index][j] - '0') * pow(2, count);
-				count++;
-			}
-			else //Sau 32 bit cập nhật vào data của QInt
-			{
-				x.data[index2--] = base10;
-				count = 0;
-				base10 = 0;
-			}
-		}
-	}
-
-	if (count < 32)
-		x.data[index2] = base10;
 }
 
 bool *DecToBin(QInt x)
@@ -285,310 +198,105 @@ char * BinToHex(bool * bit)
 	return hexChar;
 }
 
-//char * DecToHex(QInt x)
-//{
-//	bool * ptrBool = DecToBin(x);
-//	char *ptrHexCode = BinToHex(ptrBool);
-//	delete[]ptrBool;
-//	return ptrHexCode;
-//}
+char * DecToHex(QInt x)
+{
+	bool * ptrBool = DecToBin(x);
+	char *ptrHexCode = BinToHex(ptrBool);
+	delete[]ptrBool;
+	return ptrHexCode;
+}
 
 QInt operator+(QInt a, QInt b)
 {
-	int i = b.data[3];
-	int j = a.data[3], temp = 0;
+	// Thực hiện bù 2
+	// Tạo biến lưu kq, tất cả bit setted = 0
 	QInt kq;
+
+	int bit1 = b.data[3];
+	int bit2 = a.data[3];
+	bool ktDu = false; // Kiểm tra số dư
+
+	// Duyệt trên các phần tử int của data
 	for (int p = 3; p >= 0; p--)
 	{
+		// Duyệt trên từng bit của biến int
 		for (int k = 32; k >= 1; k--)
 		{
-			i = (b.data[p] >> 32 - k) & 1;
-			j = (a.data[p] >> 32 - k) & 1;
+			// Lấy các bit tương ứng để cộng
+			bit1 = (b.data[p] >> (32 - k)) & 1;
+			bit2 = (a.data[p] >> (32 - k)) & 1;
 
-			if (temp == 0)
+			// Trường hợp không dư
+			if (ktDu == false)
 			{
-				if (i == 1 && j == 1)
-				{
-					temp = 1;
-
-				}
-				if (i == 1 && j == 0 || i == 0 && j == 1)
+				if (bit1 == 1 && bit2 == 1)
+					ktDu = 1;
+				else if ((bit1 == 1 && bit2 == 0) || (bit1 == 0 && bit2 == 1))
+					kq.data[p] |= (1 << (32 - k));
+			}
+			else // Trường hợp dư
+			{
+				if (bit1 == 1 && bit2 == 1)
 				{
 					kq.data[p] |= (1 << (32 - k));
-					temp = 0;
+					ktDu = 1;
 				}
-			
-			}
-			else
-			{
-				if (i == 1 && j == 1)
+				else if ((bit1 == 1 && bit2 == 0) || (bit1 == 0 && bit2 == 1))
 				{
-					kq.data[p] = kq.data[p] | (1 << (32 - k));
-					temp = 1;
+					ktDu = 1;
 				}
-				if (i == 1 && j == 0)
+				else if (bit1 == 0 && bit2 == 0)
 				{
-					temp = 1;
-				}
-				if (i == 0 && j == 1)
-				{
-					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
-					temp = 1;
-				}
-				if (i == 0 && j == 0)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - k));
-					temp = 0;
+					kq.data[p] |= (1 << (32 - k));
+					ktDu = 0;
 				}
 			}
 		}
-		cout << endl;
 	}
-	//cout<<(1<<31)
-	//cout << kq.data[3]<<endl;
-	//cout << kq.data[2];
 	return kq;
 }
 
 QInt operator-(QInt a, QInt b)
 {
-	int i = b.data[3];
-	int j = a.data[3], temp = 0;
-	QInt kq;
-	for (int p = 3; p >= 0; p--)
-	{
+	// Thực hiện đổi dấu b
+	doiDau(b);
 
-		for (int k = 32; k >= 1; k--)
-		{
-			i = (a.data[p] >> 32 - k) & 1;
-			j = (b.data[p] >> 32 - k) & 1;
-
-			if (temp == 0)
-			{
-				if (i == 1 && j == 1)
-				{
-					//temp = 1;
-
-				}
-				if (i == 1 && j == 0)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - k));
-
-				}
-				if (i == 0 && j == 1)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - k));
-					temp = 1;
-				}
-				/*if (i == 0 && j == 0)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
-					temp = 0;
-				}
-				*/
-			}
-			else
-			{
-				if (i == 1 && j == 1)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - k));
-					temp = 1;
-				}
-				if (i == 1 && j == 0)
-				{
-					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
-					temp = 0;
-				}
-				if (i == 0 && j == 1)
-				{
-					//kq.data[p] = kq.data[p] | (1 << (32 - 1 - k));
-					temp = 1;
-				}
-				if (i == 0 && j == 0)
-				{
-					kq.data[p] = kq.data[p] | (1 << (32 - k));
-					temp = 1;
-				}
-			}
-		}
-		cout << endl;
-
-	}
-	//cout<<(1<<31)
-	/*cout << kq.data[3] << endl;
-	cout << kq.data[2];
-	cout << kq.data[1];
-	cout << kq.data[0];
-	*/
-	return kq;
+	// Thực hiện phép tính và return
+	return a + b;
 }
 
-QInt ShiftLeft1(QInt & a)
+void doiDau(QInt&inp)
 {
-	if ((a.data[3] >> 31 & 1) == 1)
-	{
-		a.data[3] = a.data[3] << 1;
-		if ((a.data[2] >> 31 & 1) == 1)
-		{
-			a.data[2] = a.data[2] << 1;
-			a.data[2] = a.data[2] | 1;
-			if ((a.data[1] >> 31 & 1) == 1)
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[1] = a.data[1] | 1;
-				a.data[0] = a.data[0] << 1;
-				a.data[0] = a.data[0] | 1;
-			}
-			else
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[1] = a.data[1] | 1;
-				a.data[0] = a.data[0] << 1;
+	// Tìm bit 1 đầu tiên từ cuối lên đầu.
+	// How: Dịch bit của biến int sang phải và and với 1
+	int storeBit,
+		i = 3, j = 0; // 2 biến lưu tạm vtri của bit in data
 
-
-			}
-		}
-		else
-		{
-			a.data[2] = a.data[2] << 1;
-			a.data[2] = a.data[2] | 1;
-			if ((a.data[1] >> 31 & 1) == 1)
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[0] = a.data[0] << 1;
-				a.data[0] = a.data[0] | 1;
-			}
-			else
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[0] = a.data[0] << 1;
-			}
-		}
-	}
-	else
+	// Tìm bit đầu tiên từ cuối = 1
+	for (; i >= 0; i--)
 	{
-		a.data[3] = a.data[3] << 1;
-		if ((a.data[2] >> 31 & 1) == 1)
+		for (j = 0; j < 32; j++)
 		{
-			a.data[2] = a.data[2] << 1;
-			if ((a.data[1] >> 31 & 1) == 1)
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[1] = a.data[1] | 1;
-				a.data[0] = a.data[0] << 1;
-				a.data[0] = a.data[0] | 1;
-			}
-			else
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[1] = a.data[1] | 1;
-				a.data[0] = a.data[0] << 1;
+			// Lấy bit để kiểm tra
+			storeBit = (inp.data[i] >> j) & 1;
+			if (storeBit == 1) {
+				j++; // Tăng lên để nhảy đến bit tiếp theo
+				break;
 			}
 		}
-		else
-		{
-			a.data[2] = a.data[2] << 1;
-			if ((a.data[1] >> 31 & 1) == 1)
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[0] = a.data[0] << 1;
-				a.data[0] = a.data[0] | 1;
-			}
-			else
-			{
-				a.data[1] = a.data[1] << 1;
-				a.data[0] = a.data[0] << 1;
-			}
-		}
+		if (storeBit == 1)
+			break;
 	}
 
-
-	return QInt();
+	// Thực hiện đổi dấu phần còn lại
+	// 2 vòng lặp ngoài để duyệt bit
+	for (; i >= 0; i--)
+	{
+		for (; j < 32; j++)
+		{
+			// thực hiện xor để đổi dấu
+			inp.data[i] ^= (1 << j); 
+		}
+		j = 0; // Set lại j để bắt đầu vòng lặp mới.
+	}
 }
-
-QInt ShiftLeftChia(QInt & b, QInt &a)
-{
-	if ((a.data[0] >> 31 & 1) == 1)
-	{
-		ShiftLeft1(b);
-		b.data[3] = b.data[3] | 1;
-		ShiftLeft1(a);
-	}
-	else
-	{
-		ShiftLeft1(b);
-		ShiftLeft1(a);
-	}
-	return QInt();
-}
-
-/*QInt ShiftRight(QInt & a)
-{
-	if((a.data[0] & 1) == 1)
-	{
-		a.data[1] = a.data[1] | 1 << 31;
-	}
-	if((a.data[1] & 1) == 1)
-	{
-		a.data[2] = a.data[2] | 1 << 31;
-	}
-	if((a.data[2] & 1) == 1)
-	{
-		a.data[3] = a.data[3] | 1 << 31;
-	}
-	return a;
-}
-*/
-
-
-QInt operator*(QInt a, QInt b)
-{
-	QInt kq;
-	QInt tam = a;
-	for (int p = 3; p >= 0; p--)
-	{
-
-		for (int k = 32; k >= 1; k--)
-		{
-			if ((b.data[p] >> (32 - k) & 1) == 1)
-			{
-				kq = (kq + tam);
-				ShiftLeft1(tam);
-			}
-			else
-			{
-				ShiftLeft1(tam);
-			}
-		}
-	}
-	return kq;
-}
-
-/*QInt operator/(QInt a, QInt b)
-{
-	QInt kq=a;
-	QInt tam;
-	if (a.data[0] >> 31 & 1 == 1)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			tam.data[i] = -1;
-		}
-	}
-	int k = 128;
-	while (k > 0)
-	{
-		QInt tam1;
-		ShiftLeftChia(tam, kq);
-		tam1 = tam - b;
-		if (tam1.data[0] >> 31 & 1 == 0)
-		{
-			kq.data[3] = kq.data[3] | 1;
-			tam = tam - b;
-		}
-		k--;
-	}
-	//cout << tam.data[3]<<endl;
-	return kq;
-}
-*/

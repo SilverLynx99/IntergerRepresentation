@@ -22,3 +22,4 @@ string operator /(string num1, int num2);
 // Input: 1 chuỗi và một số
 // Output: Kq (kiểu int)
 int operator %(string num1, int num2);
+

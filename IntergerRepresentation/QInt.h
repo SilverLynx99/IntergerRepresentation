@@ -1,9 +1,5 @@
 ﻿#pragma once
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <stdlib.h>
-#include <vector>
 
 using namespace std;
 struct QInt
@@ -21,11 +17,9 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
 // Xử lý nhập liệu
 void ScanQInt(QInt &x);
-void ScanQIntBin(QInt &x);
-void ScanQIntHex(QInt &x);
 
 
-// Xử lý chuyển đổi
+// --- XỬ LÝ CHUYỂN ĐỔI
 
 // Chuyển đổi từ QInt sang nhị phân và lưu mã nhị phân 
 // bằng một mảng 128 bytes.
@@ -45,14 +39,26 @@ char * BinToHex(bool *bit);
 // Chuyển đổi QInt sang Hex
 // Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
 char * DecToHex(QInt x);
+// ---
 
+// -- TÍNH TOÁN
+// Cộng 2 số QInt, xuất ra ngoài QInt. 
+// Không xử lý tràn số.
 QInt operator+( QInt a,QInt b);
+
+
 QInt operator-(QInt a, QInt b);
 QInt operator*(QInt a, QInt b);
 QInt operator/(QInt a, QInt b);
-QInt ShiftLeft(QInt &a);
-QInt ShiftLeft1(QInt &a);
-QInt ShiftLeftChia(QInt &a,QInt &b);
-QInt ShiftRight(QInt&a);
-//const QInt operator=(const QInt &a);
+QInt operator<< (QInt a, int b);
+QInt operator>> (QInt a, int b);
 
+// ---
+
+
+//--- UTILITY FUNCTION FOR QINT
+
+// Đổi dấu một số QInt, thay đổi trên chính nó
+void doiDau(QInt &inp);
+
+// ---
