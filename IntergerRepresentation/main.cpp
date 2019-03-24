@@ -8,16 +8,14 @@
 // 11111110 10011001 01010111 01011011		01100000 01111010 01010011 00010110 bit âm
 // ‭166 A8A4 9F85 ACEA
 // ‬‭100 953 466 666 855 658‬
-//string Number = "123564687923134646";
-//string NumberBit = "10110001100100011110011110011111000111110001111110000111100001";
+
 
 using namespace std;
 
+void inChuoiBitQInt(QInt a);
+
 int main(int argc, char* argv[])
 {
-	string test = "1335";
-
-	cout << test / 2;
 	//QInt a;
 	//a.data[0] = 0;
 	//a.data[1] = 0;
@@ -50,44 +48,8 @@ int main(int argc, char* argv[])
 	QInt b;
 	ScanQInt(b);
 
-	int temp;
-	for (int i = 31; i >= 0; i--)
-	{
-		temp = (b.data[0] >> i);
-		printf("%d", temp & 1);
-		if (i % 8 == 0)
-			printf(" ");
-	}
-	printf("\n");
-
-	for (int i = 31; i >= 0; i--)
-	{
-		temp = (b.data[1] >> i);
-		printf("%d", temp & 1);
-		if (i % 8 == 0)
-			printf(" ");
-	}
-	printf("\n");
-
-	for (int i = 31; i >= 0; i--)
-	{
-		temp = (b.data[2] >> i);
-		printf("%d", temp & 1);
-		if (i % 8 == 0)
-			printf(" ");
-	}
-	printf("\n");
-
-	for (int i = 31; i >= 0; i--)
-	{
-		temp = (b.data[3] >> i);
-		printf("%d", temp & 1);
-		if (i % 8 == 0)
-			printf(" ");
-	}
+	inChuoiBitQInt(b);
 	
-
-
 	//// Kiểm tra đủ 3 tham số không. Nếu không --> báo lỗi
 	//if (argc != 3) {
 	//	cout << "Usage: file.exe input.txt output.txt";
@@ -114,33 +76,25 @@ int main(int argc, char* argv[])
 	//processFileandOutput(inputFile, outputFile);
 
 	// Đóng file
-	inputFile.close();
-	outputFile.close();
-	*/
-	QInt a, b;
-	a.data[3] = 123;
-	//a.data[3] = 1234;
-	b.data[3] = 123;
-	//b.data[2] = 2;
-	//a.data[2] = 1234567;
-	//b.data[2] = 1234567;
-	//b.data[3] = 1234;
-	//a - b;
-	QInt k;
-	/*k.data[0] = 2;
-	k.data[1] = 2;
-	k.data[2] = 2;
-	k.data[3] = 2;
-	ShiftLeft(k);
-	cout << endl << k.data[0];
-	//cout<<a.data[3];
-	*/
-	k =a/b;
-	
-	cout << k.data[3] << endl;
-	cout << k.data[2]<<endl;
-	cout << k.data[1] << endl;
-	cout << k.data[0];
+	//inputFile.close();
+	//outputFile.close();
+
 	system("pause");
 	return 0;
+}
+
+void inChuoiBitQInt(QInt a)
+{
+	int temp;
+	for (int j = 0; j < 4; j++) {
+		for (int i = 31; i >= 0; i--)
+		{
+			temp = (a.data[j] >> i);
+			printf("%d", temp & 1);
+			if (i % 8 == 0)
+				printf(" ");
+		}
+		printf("\n");
+	}
+	
 }
