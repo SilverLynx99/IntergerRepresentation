@@ -2,17 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "QInt.h"
-#include "UtilityFunc.h"
-
-// 0000‭0001 01100110 10101000 10100100		10011111 10000101 10101100 11101010‬ bit dương
-// 11111110 10011001 01010111 01011011		01100000 01111010 01010011 00010110 bit âm
-// ‭166 A8A4 9F85 ACEA
-// ‬‭100953466666855658‬
-
-// NOTE :
-// 1.Chưa xử lý tràn số
-// 2. Có thời gian sửa tiếp hàm chuyển đổi.
-// 
+#include "Qfloat.h"
 
 using namespace std;
 
@@ -25,9 +15,6 @@ int main(int argc, char* argv[])
 	ScanQInt(a);
 	printf("Nhap so b: ");
 	ScanQInt(b);
-
-
-	 
 
 	// In ra chuỗi bit trong mảng bool
 	//for (int i = 1; i <= 128; i++)
@@ -107,3 +94,13 @@ void inChuoiBitQInt(QInt a)
 //c.data[1] = -1;
 //c.data[2] = -23505061;
 //c.data[3] = 1618629398;
+
+// 0000‭0001 01100110 10101000 10100100		10011111 10000101 10101100 11101010‬ bit dương
+// 11111110 10011001 01010111 01011011		01100000 01111010 01010011 00010110 bit âm
+// ‭166 A8A4 9F85 ACEA
+// ‬‭100953466666855658‬
+
+// NOTE :
+// 1.Chưa xử lý tràn số
+// 2. Có thời gian sửa tiếp hàm chuyển đổi.
+// 

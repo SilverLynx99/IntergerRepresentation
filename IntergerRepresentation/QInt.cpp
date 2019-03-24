@@ -1,4 +1,5 @@
-﻿#include "QInt.h"
+﻿
+#include "QInt.h"
 #include "UtilityFunc.h"
 
 bool KiemTraOperator(vector<string> optList, string x)
