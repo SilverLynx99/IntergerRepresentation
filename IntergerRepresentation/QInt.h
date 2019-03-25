@@ -51,6 +51,7 @@ QInt operator-(QInt a, QInt b);
 // --> Nhật <--
 QInt operator*(QInt a, QInt b);
 QInt operator/(QInt a, QInt b);
+QInt ShiftLeftChia(QInt & b, QInt &a);
 // --> Nhật <--
 
 
@@ -70,7 +71,7 @@ bool operator==(const QInt &a,const QInt &b);
 //-- TOÁN TỬ BIT 
 
 // --> Nhật <--
-QInt operator<< (const QInt &a, int b);
+QInt operator<< (const QInt a, int b);
 QInt operator>> (const QInt &a, int b);
 // --> Nhật <--
 

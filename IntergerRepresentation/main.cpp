@@ -39,6 +39,11 @@ int main(int argc, char* argv[])
 	// Đóng file
 	//inputFile.close();
 	//outputFile.close();
+	QInt a, b, kq;
+	a.data[3] = 1234;
+	b.data[3] = 1234;
+	kq = a * b;
+	cout << kq.data[3];
 
 	system("pause");
 	return 0;

@@ -470,14 +470,115 @@ QInt operator-(QInt a, QInt b)
 
 QInt operator*(QInt a, QInt b)
 {
+	QInt kq;
+	QInt tam = a;
+	for (int p = 3; p >= 0; p--)
+	{
+
+		for (int k = 32; k >= 1; k--)
+		{
+			if ((b.data[p] >> (32 - k) & 1) == 1)
+			{
+				kq = (kq + tam);
+				tam=<<1;
+			}
+			else
+			{
+				tam = << 1;
+			}
+		}
+	}
+	return kq;
 	return QInt();
 }
 
 QInt operator/(QInt a, QInt b)
 {
-	return QInt();
-}
+	QInt tam;
+	int temp = 0;
+	QInt kq;
 
+	if (((a - b).data[0] >> 31) == 1)//kiểm tra nếu số chia bé hơn số bị chia trả về kq=0
+	{
+		return kq;
+
+	}
+
+	// 3 câu lệnh if bên duối kiểm tra xem có phải số âm không nếu âm ta đổi dấu là lưu biến temp=1
+	if ((((a.data[0] >> 31) & 1) == 1) && (((b.data[0] >> 31) & 1) == 1))
+	{
+		doiDau(a);
+		doiDau(b);
+	}
+	if ((((a.data[0] >> 31) & 1) == 0) && (((b.data[0] >> 31) & 1) == 1))
+	{
+		doiDau(b);
+		temp = 1;
+	}
+	if ((((a.data[0] >> 31) & 1) == 1) && (((b.data[0] >> 31) & 1) == 0))
+	{
+		doiDau(a);
+		temp = 1;
+	}
+
+	kq = a;//gán kết quả bằng a
+	if (((a.data[0] >> 31) & 1) == 1)//nếu a<0 mảng chứ số dư bằng -1
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			tam.data[i] = -1;
+		}
+	}
+
+	int k = 128;
+	while (k > 0)
+		//vòng lặp duyệt 128 bit kiểu Qint
+	{
+		ShiftLeftChia(tam, kq);//ham dich trái bit từ kết quả sang số dư
+		tam = tam - b;//trừ số dư cho số chia
+		if (((tam.data[0] >> 31) & 1) == 0)//nếu số dư lớn hơn số chia thì bật bit cuối lên 1
+		{
+			kq.data[3] |= 1;
+		}
+		else
+		{
+			tam = tam + b;//nếu số dư bé hơn số chia thì công lại
+		}
+		k--;
+	}
+
+	if(temp == 1)//đổi dấu kết quả cho phù hợp với dấu 2 số truyền vào
+	{
+		doiDau(kq);
+	}
+	//cout << endl << tam.data[3] << endl;//in ra số dư
+	return kq;
+	return kq;
+	
+}
+QInt ShiftLeftChia(QInt & b, QInt &a)
+{
+
+	QInt tam = a;
+	for (int p = 3; p >= 0; p--)//duyêt các phần tử của mang QIint
+	{
+
+		for (int k = 32; k >= 1; k--)//duyệt 32 bit trong mỗi phần tử
+		{
+			if ((b.data[p] >> (32 - k) & 1) == 1)//kiểm tra bit ở số nhân xe có bằng 1 không nếu bằng một thì cộng với số nhân
+											//	tùy thuộc và vị trí ta dịch bit cho hợp lý
+			{
+				kq = kq + tam;
+				tam = tam << 1;
+			}
+			else
+			{
+				tam = tam << 1;
+			}
+		}
+	}
+	return kq;
+}
 bool operator<(const QInt & a, const QInt & b)
 {
 	return false;
@@ -503,14 +604,179 @@ bool operator==(const QInt & a, const QInt & b)
 	return false;
 }
 
-QInt operator<<(const QInt & a, int b)
+QInt operator<<(const QInt  a, int b)
 {
-	return QInt();
+	//hàm dịch trái logic kiểm tra điều kiện các bít cuổi của 4 số trong Qint có là 1 hoặc 0
+	// chia làm 8 trường hợp để thực hiện 
+	for (int i = 0; i < b; i++)
+	{
+		if ((a.data[3] >> 31 & 1) == 1)// bít đầu của số thứ 4 trong QInt=1
+		{
+			a.data[3] = a.data[3] << 1;
+			if ((a.data[2] >> 31 & 1) == 1)// bít đầu của số thứ 3 trong QInt=1
+			{
+				a.data[2] = a.data[2] << 1;
+				a.data[2] |= 1;
+				if ((a.data[1] >> 31 & 1) == 1)// bít đầu của số thứ 2 trong QInt=1
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[1] |= 1;
+					a.data[0] = a.data[0] << 1;
+					a.data[0] |= 1;
+				}
+				else// bít đầu của số thứ 2 trong QInt=0
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[1] |= 1;
+					a.data[0] = a.data[0] << 1;
+
+
+				}
+			}
+			else//bít đầu của số thứ 4 trong QInt=0
+			{
+				a.data[2] = a.data[2] << 1;
+				a.data[2] |= 1;
+				if ((a.data[1] >> 31 & 1) == 1)// bít đầu của số thứ 2 trong QInt=1
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[0] = a.data[0] << 1;
+					a.data[0] |= 1;
+				}
+				else
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[0] = a.data[0] << 1;
+				}
+			}
+		}
+		else
+		{
+			a.data[3] = a.data[3] << 1;
+			if ((a.data[2] >> 31 & 1) == 1)// bít đầu của số thứ 3 trong QInt=1
+			{
+				a.data[2] = a.data[2] << 1;
+				if ((a.data[1] >> 31 & 1) == 1)// bít đầu của số thứ 2 trong QInt=1
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[1] |= 1;
+					a.data[0] = a.data[0] << 1;
+					a.data[0] |= 1;
+				}
+				else
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[1] |= 1;
+					a.data[0] = a.data[0] << 1;
+				}
+			}
+			else
+			{
+				a.data[2] = a.data[2] << 1;
+				if ((a.data[1] >> 31 & 1) == 1)// bít đầu của số thứ 2 trong QInt=1
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[0] = a.data[0] << 1;
+					a.data[0] |= 1;
+				}
+				else
+				{
+					a.data[1] = a.data[1] << 1;
+					a.data[0] = a.data[0] << 1;
+				}
+			}
+		}
+	}
+	return a;
 }
 
 QInt operator>>(const QInt & a, int b)
 {
-	return QInt();
+	//hàm dịch phải logic kiểm tra điều kiện các bít cuổi của 4 số trong Qint có là 1 hoặc 0
+	// chia làm 8 trường hợp để thực hiện 
+	for (int i = 0; i < b; i++)
+	{
+		if ((a.data[0] & 1) == 1)//trường hợp bít đầu là 1
+		{
+			a.data[0] = a.data[0] >> 1;
+			a.data[0] |= 1 << 31;
+			if ((a.data[1] & 1) == 1)
+			{
+				a.data[1] = a.data[1] >> 1;
+				a.data[1] |= 1 << 31;
+				if ((a.data[2] & 1) == 1)
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[2] |= 1 << 31;
+					a.data[3] = a.data[3] >> 1;
+					a.data[3] |= 1 << 31;
+				}
+				else
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[2] |= 1 << 31;
+					a.data[3] = a.data[3] >> 1;
+
+
+				}
+			}
+			else
+			{
+				a.data[1] = a.data[1] >> 1;
+				a.data[1] |= 1 << 31;
+				if ((a.data[2] & 1) == 1)
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[3] = a.data[3] >> 1;
+					a.data[3] |= 1 << 31;
+				}
+				else
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[3] = a.data[3] >> 1;
+				}
+			}
+		}
+		else////trường hợp bít đầu là 0
+		{
+			a.data[0] = a.data[0] >> 1;
+			if ((a.data[1] & 1) == 1)
+			{
+				a.data[1] = a.data[1] >> 1;
+				if ((a.data[2] & 1) == 1)
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[2] |= 1 << 31;
+					a.data[3] = a.data[3] >> 1;
+					a.data[3] |= 1 << 31;
+				}
+				else
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[2] |= 1 << 31;
+					a.data[3] = a.data[3] >> 1;
+				}
+			}
+			else
+			{
+				a.data[1] = a.data[1] >> 1;
+				if ((a.data[2] & 1) == 1)
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[3] = a.data[3] >> 1;
+					a.data[3] |= 1 << 31;
+
+				}
+				else
+				{
+					a.data[2] = a.data[2] >> 1;
+					a.data[3] = a.data[3] >> 1;
+				}
+			}
+		}
+
+	}
+	return a;
 }
 
 QInt operator&(const QInt & a, int b)
