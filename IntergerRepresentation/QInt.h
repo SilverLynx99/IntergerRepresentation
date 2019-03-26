@@ -1,13 +1,132 @@
 ﻿#pragma once
 #include <iostream>
-
+#include "UtilityFunc.h"
 using namespace std;
-struct QInt
+
+class QInt
 {
+public:
+	QInt();
+	QInt(int inp);
+	QInt(string input);
+	QInt(const QInt &src);
+
+	QInt& operator= (const QInt &src);
+
+	// -- TÍNH TOÁN
+	// Cộng 2 số QInt, xuất ra ngoài QInt. 
+	// Không xử lý tràn số.
+	QInt operator+ (const QInt& b)const;
+	QInt operator- (const QInt& b)const;
+	QInt operator* (const QInt& b)const;
+	QInt operator/ (const QInt& b)const; // Chưa viết.
+
+	// -- TOÁN TỬ BIT
+	QInt operator>>(int num) const;
+	QInt operator<<(int num) const;
+
+	QInt operator&(const QInt & b);
+	QInt operator|(const QInt & b);
+	QInt operator^(const QInt & b);
+	QInt operator~()const;
+	// ----
+
+	// -- TOÁN TỬ SO SÁNH
+	bool operator> (const QInt & a)const;
+	bool operator< (const QInt & a)const;
+	bool operator>= (const QInt & a)const;
+	bool operator<= (const QInt & a)const;
+	bool operator== (const QInt & a)const;
+	//--
+	
+	// Xử lý nhập liệu
+	friend istream& operator>> (istream& is, QInt & inp)
+	{
+		// CHƯA XỬ LÝ CHUỖI NHẬP XUẤT CHỖ NÀY
+		// Nhập chuỗi
+		string Number;
+		is >> Number;
+
+		bool sign = false; // True = số âm, false là dương
+
+		// Trường hợp chuỗi bit là âm
+		if (Number[0] == '-')
+		{
+			// Bỏ dấu trừ
+			Number.erase(0, 1);
+
+			// Ky hieu dau am
+			sign = true;
+		}
+
+		int count = 0;
+		int temp; // biến tạm chứa chuỗi bit cần or
+
+		// Chia đến khi kq bằng 0
+		while (Number.compare("0") != 0)
+		{
+			// Nếu số dư bằng 1 thì bật bit tại vtri tương ứng
+			if (Number % 2 == 1)
+			{
+				temp = 1;
+				temp <<= (count % 32);
+				inp.data[3 - (count / 32)] |= temp; // Or với temp để bật bit
+			}
+
+			Number = Number / 2;
+			count++;
+		}
+
+		// Thực hiện chuyển đổi chuỗi bit dương thành âm, nếu số ban đầu là âm.
+		if (sign) {
+			inp = inp.doiDau();
+		}
+
+		return is;
+	}
+
+	friend ostream& operator<< (ostream& os,const QInt& out)
+	{
+		int temp;
+		for (int j = 0; j < 4; j++) {
+			for (int i = 31; i >= 0; i--)
+			{
+				temp = (out.data[j] >> i);
+				os << (temp & 1);
+				if (i % 8 == 0)
+					os << " ";
+			}
+			os << endl;
+		}
+
+
+		return os;
+	}
+	
+private:
 	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
 	// đi từ trái qua phải
 
 	// Bit là bit dấu. Số âm viết ở dạng bù 2.
+	int data[4];
+
+
+	//--- UTILITY FUNCTION FOR QINT
+
+	// Đổi dấu một số QInt, thay đổi trên chính nó
+	QInt doiDau() const;
+
+	// Kiểm tra một số có phải là âm không ?
+	bool ktAm() const;
+
+
+	void DichTraiDacBiet(QInt &a);
+	// ---
+};
+
+struct test
+{
+	
 	int data[4] = { 0 };
 };
 
@@ -15,8 +134,8 @@ struct QInt
 // Note: Stream in có thể là file, có thể là cin.
 bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
-// Xử lý nhập liệu
-void ScanQInt(QInt &x);
+
+
 
 
 // --- XỬ LÝ CHUYỂN ĐỔI
@@ -25,12 +144,12 @@ void ScanQInt(QInt &x);
 // bằng một mảng 128 bytes.
 // Cách làm: chỉ cần lấy bit và lưu lại.
 // LƯU Ý HỦY CẤP PHÁT MẢNG BOOL
-bool *DecToBin(QInt x);
+bool *DecToBin(test x);
 
 // Chuyển đổi dãy nhị phân thành QInt
 // WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
 // LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
-QInt BinToDec(bool *bit);
+test BinToDec(bool *bit);
 
 // Chuyển đỗi dãy nhị phân thành mã hex
 // Output: một chuỗi hex có 32 ký tự, có cả ký tự '0'
@@ -38,54 +157,4 @@ char * BinToHex(bool *bit);
 
 // Chuyển đổi QInt sang Hex
 // Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
-char * DecToHex(QInt x);
-// ---
-
-// -- TÍNH TOÁN
-// Cộng 2 số QInt, xuất ra ngoài QInt. 
-// Không xử lý tràn số.
-
-QInt operator+( QInt a,QInt b);
-QInt operator-(QInt a, QInt b);
-
-// --> Nhật <--
-QInt operator*(QInt a, QInt b);
-QInt operator/(QInt a, QInt b);
-// --> Nhật <--
-
-
-// ---
-
-// -- SO SÁNH (PHÁT)
-bool operator<(const QInt &a,const QInt &b);
-bool operator>(const QInt &a,const QInt &b);
-bool operator>=(const QInt &a,const QInt &b);
-bool operator<=(const QInt &a,const QInt &b);
-bool operator==(const QInt &a,const QInt &b);
-//QInt operator=(QInt a,QInt b);
-
-
-//--------
-
-//-- TOÁN TỬ BIT 
-
-// --> Nhật <--
-QInt operator<< (const QInt &a, int b);
-QInt operator>> (const QInt &a, int b);
-// --> Nhật <--
-
-// --> Nhân <--
-QInt operator& (const QInt &a, int b);
-QInt operator| (const QInt &a, int b);
-QInt operator^ (const QInt &a, int b);
-QInt operator~ (const QInt &a);
-// --> Nhân <--
-
-
-
-//--- UTILITY FUNCTION FOR QINT
-
-// Đổi dấu một số QInt, thay đổi trên chính nó
-void doiDau(QInt &inp);
-
-// ---
+char * DecToHex(test x);
