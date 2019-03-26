@@ -79,9 +79,10 @@ string operator -(string num1, string num2)
 {
 	standard2String(num1, num2);
 	string sub;
-	if (num1 == num2)
+	//Nếu 2 số bằng nhau trả về 0
+	if (num1.compare(num2) == 0)
 	{
-		sub.insert(0, 1, '0');
+		sub = "0";
 		return sub;
 	}
 
@@ -116,6 +117,7 @@ string operator -(string num1, string num2)
 			mem = 1;
 		}
 
+		//Nếu kết thúc vòng for và kết quả trừ cuối cùng là 0 thì ko chèn thêm kết quả ở đầu.
 		if ((i == 0) && (rs == 0))
 			continue;
 
@@ -159,13 +161,12 @@ int operator %(string num1, int num2)
 {
 	string mod = num1 / num2;
 
-	// CẦN COMMENT
-	char temp[3];
-	_itoa(num2, temp, 10);
+	// Chuyển số int sang chuỗi để thực hiện phép chuỗi nhân chuỗi
+	string temp = to_string(num2);
 
 	mod = num1 - (mod * temp);
 
-	// CẦN COMMENT
+	// Chuyển chuỗi kết quả về dạng int
 	return atoi(mod.c_str());
 }
 
@@ -218,10 +219,15 @@ string convertToString(const REALNUM &num)
 		n--;
 	}
 
+	//Xóa chữ số 0 thừa ở phần thập phân
 	if (count == num.point)
 		s.erase(n + 1, count - 1);
 	else
 		s.erase(n + 1, count);
+
+	//Nếu là dạng 0.xx thì sẽ mất số 0 ở đầu nên phải chèn thêm 0
+	if (s[0] == '.')
+		s.insert(0, 1, '0');
 
 	return s;
 }
@@ -238,9 +244,23 @@ void standardRealNum(REALNUM &num1, REALNUM &num2)
 	num2.num.insert(num2.num.length(), maxPoint - num2.point, '0');
 }
 
+string addReal(string num1, string num2)
+{
+	REALNUM sum, a, b;
+	//Chuyển kiểu string sang REALNUM
+	a = convertToRealNum(num1);
+	b = convertToRealNum(num2);
+	standardRealNum(a, b);
+	sum.num = a.num + b.num; //Cộng số nguyên bình thường
+	sum.point = max(a.point, b.point); //phần thập phân của kết quả bằng phần thập phân lớn nhất trong 2 số
+	return convertToString(sum);
+}
+
+
 string subReal(string num1, string num2)
 {
 	REALNUM sub, a, b;
+	//Chuyển kiểu string sang REALNUM
 	a = convertToRealNum(num1);
 	b = convertToRealNum(num2);
 	standardRealNum(a, b);
@@ -252,11 +272,61 @@ string subReal(string num1, string num2)
 string mulReal(string num1, int num2)
 {
 	REALNUM mul, a, b;
-	char temp[3];
-	_itoa(num2, temp, 10);
+	//Chuyển số sang chuỗi string
+	string temp = to_string(num2);
+	//Chuyển kiểu string sang REALNUM
 	a = convertToRealNum(num1);
 	b = convertToRealNum(temp);
 	mul.num = a.num*b.num; //Nhân số nguyên bình thường
 	mul.point = a.point + b.point; //Phần thập phân của kết quả bằng tổng phần thập phân của phân số
 	return convertToString(mul);
+}
+
+string decimalFractions(string mod, int divisor) //Lấy tối đa 20 chữ số thập phân
+{
+	string dFrac = "";
+	mod += "0"; //Thêm số "0" phía sau phần dư
+	int i = 0;
+	while (i < 20)
+	{
+		dFrac += (mod/divisor) ; //Lấy phần nguyên của kết quả phép chia phần dư đã thêm "0
+		mod = to_string(mod % divisor); //Lấy phần dư
+		if (mod == "0") //Nếu phần dư bằng 0 thì phép chia kết thúc
+			break;
+		else //Không thì là tiếp tục thêm số "0" phía sau phần dư cho đến khi tối đa 20 chữ số thập phân
+			mod += "0";
+		i++;
+	}
+	return dFrac;
+}
+
+string divReal(string num1, int num2)
+{
+	REALNUM a, div;
+	a = convertToRealNum(num1);
+	//Tạo biến temp để chuyển kết quả phép % từ int sang string 
+	//Để sử dụng hàm decimalFractions bên dưới 
+	string temp = to_string(a.num % num2);
+
+	string dFract = decimalFractions(temp, num2); //Lấy phần thập phân
+	div.num = a.num / num2; //Lấy phần nguyên
+
+	div.num += dFract; //Nối 2 phần lại
+	if (a.point != 0) //Nếu là một số thập phân
+	{
+		int count = 0;
+		int x = div.num.length();  //Tính chiều dài chuỗi
+		div.point = dFract.length() + a.point; //Dấu thập phân bằng độ dài phần thập dFract + a.point
+		if (a.num[0] == '0')
+		{
+			while (count < (div.point - x)) //Thêm số 0 tương ứng với độ chênh lệch độ dài chuỗi và phần thập phân
+			{
+				div.num.insert(0, 1, '0');
+				count++;
+			}
+		}
+	}
+	else
+		div.point = dFract.length(); //Dấu thập phân sẽ bằng độ dài phần thập phân
+	return convertToString(div);
 }

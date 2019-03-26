@@ -22,6 +22,6 @@ Tao vừa mới merge và cập nhật lại các file của ae vào nhánh mast
 ## Viết đúng hàm vào đúng cặp file. Không tự ý tạo file mới, sẽ rất khó để gộp chung vào.
 
 ## Cách dùng git từ giờ trở về sau:
-### Chúng ta sẽ tạo một nhánh master (local) và thực hiện các thay đổi trên đó. Sau khi đã viết xong, thực hiện pull request để tham khảo ý kiến của người khác trước khi merge vào nhánh chính.
+### Chúng ta sẽ tạo một nhánh master (local) và thực hiện các thay đổi trên đó. Sau khi đã viết xong, thực hiện pull request để tham khảo ý kiến của người khác trước khi merge vào nhánh chính. Các nhánh khác t sẽ xóa hết. 
 
 # Mong ae đọc ky code trước khi viết, việc gộp chung lại rất mệt và tốn thời gian. Cái gì k hiểu cứ inb hỏi t, chứ k nên tự viết.

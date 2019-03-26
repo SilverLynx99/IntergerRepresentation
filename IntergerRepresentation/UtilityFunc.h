@@ -55,7 +55,8 @@ int max(int a, int b);
 //Thêm số 0 vào cuối phần thập phân cho độ dài bằng nhau
 void standardRealNum(REALNUM &num1, REALNUM &num2);
 
+string addReal(string num1, string num2);
 string subReal(string num1, string num2);
 string mulReal(string num1, int num2);
-
+string divReal(string num1, int num2);
 // -----------
