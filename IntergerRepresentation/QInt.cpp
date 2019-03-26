@@ -606,201 +606,41 @@ char * QInt::DecToHex(QInt x)
 	return ptrHexCode;
 }
 
-QInt operator+(QInt a, QInt b)
-{
-	// Thực hiện bù 2
-	// Tạo biến lưu kq, tất cả bit setted = 0
-	QInt kq;
-
-	int bit1 = b.data[3];
-	int bit2 = a.data[3];
-	bool ktDu = false; // Kiểm tra số dư
-
-	// Duyệt trên các phần tử int của data
-	for (int p = 3; p >= 0; p--)
-	{
-		// Duyệt trên từng bit của biến int
-		for (int k = 32; k >= 1; k--)
-		{
-			// Lấy các bit tương ứng để cộng
-			bit1 = (b.data[p] >> (32 - k)) & 1;
-			bit2 = (a.data[p] >> (32 - k)) & 1;
-
-			// Trường hợp không dư
-			if (ktDu == false)
-			{
-				if (bit1 == 1 && bit2 == 1)
-					ktDu = 1;
-				else if ((bit1 == 1 && bit2 == 0) || (bit1 == 0 && bit2 == 1))
-					kq.data[p] |= (1 << (32 - k));
-			}
-			else // Trường hợp dư
-			{
-				if (bit1 == 1 && bit2 == 1)
-				{
-					kq.data[p] |= (1 << (32 - k));
-					ktDu = 1;
-				}
-				else if ((bit1 == 1 && bit2 == 0) || (bit1 == 0 && bit2 == 1))
-				{
-					ktDu = 1;
-				}
-				else if (bit1 == 0 && bit2 == 0)
-				{
-					kq.data[p] |= (1 << (32 - k));
-					ktDu = 0;
-				}
-			}
-		}
-	}
-	return kq;
-}
-
-QInt operator-(QInt a, QInt b)
-{
-	// Thực hiện đổi dấu b
-	doiDau(b);
-
-	// Thực hiện phép tính và return
-	return a + b;
-}
-
-QInt operator*(QInt a, QInt b)
-{
-	return QInt();
-}
-
-QInt operator/(QInt a, QInt b)
-{
-	return QInt();
-}
-
-bool operator<(const QInt & a, const QInt & b)
-{
-	return false;
-}
-
-bool operator>(const QInt & a, const QInt & b)
-{
-	return false;
-}
-
-bool operator>=(const QInt & a, const QInt & b)
-{
-	return false;
-}
-
-bool operator<=(const QInt & a, const QInt & b)
-{
-	return false;
-}
-
-bool operator==(const QInt & a, const QInt & b)
-{
-	return false;
-}
-
-QInt operator<<(const QInt & a, int b)
-{
-	return QInt();
-}
-
-QInt operator>>(const QInt & a, int b)
-{
-	return QInt();
-}
-
-QInt operator&(const QInt & a, int b)
-{
-	return QInt();
-}
-
-QInt operator|(const QInt & a, int b)
-{
-	return QInt();
-}
-
-QInt operator^(const QInt & a, int b)
-{
-	return QInt();
-}
-
-QInt operator~(const QInt & a)
-{
-	return QInt();
-}
-
-void doiDau(QInt&inp)
-{
-	// Tìm bit 1 đầu tiên từ cuối lên đầu.
-	// How: Dịch bit của biến int sang phải và and với 1
-	int storeBit,
-		i = 3, j = 0; // 2 biến lưu tạm vtri của bit in data
-
-	// Tìm bit đầu tiên từ cuối = 1
-	for (; i >= 0; i--)
-	{
-		for (j = 0; j < 32; j++)
-		{
-			// Lấy bit để kiểm tra
-			storeBit = (inp.data[i] >> j) & 1;
-			if (storeBit == 1) {
-				j++; // Tăng lên để nhảy đến bit tiếp theo
-				break;
-			}
-		}
-		if (storeBit == 1)
-			break;
-	}
-
-	// Thực hiện đổi dấu phần còn lại
-	// 2 vòng lặp ngoài để duyệt bit
-	for (; i >= 0; i--)
-	{
-		for (; j < 32; j++)
-		{
-			// thực hiện xor để đổi dấu
-			inp.data[i] ^= (1 << j); 
-		}
-		j = 0; // Set lại j để bắt đầu vòng lặp mới.
-	}
-}
-
-void PrintQInt(QInt x)
-{
-	string LastDEC = "0";
-	string BinToDec = "1";
-	int temp;
-	int Count = 0;
-	int LastBit = 1;
-	bool Sign = false;
-	if ((x.data[3] & (1 << 31)) == 1) // dịch phải 31 bit tìm bit dấu
-	{
-		doiDau(x);
-		Sign = true;
-	}
-	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt++)
-	{
-		temp = x.data[iterOnQInt];
-		while (temp > 0)
-		{
-			int Bit = temp % 2;
-			if (Bit == 1)
-			{
-				while (LastBit > Count) // LastBit là vị trí bit 1 trước đó, Count là vị trí bit 1 đang xét.
-				{
-					BinToDec = BinToDec * "2";
-					LastBit++;
-				}
-				LastDEC = LastDEC + BinToDec; // tính giá trị từng bit 1 sau đó cộng vào chuỗi chính
-			}
-			Count++;
-			temp = temp / 2;
-		}
-	}
-	if (Sign == true)
-	{
-		// thêm dấu trừ vào đầu chuỗi LastDEC cho t nha t k biết thêm sao cho gọn :))
-	}
-	cout << LastDEC;
-}
+//void PrintQInt(QInt x)
+//{
+//	string LastDEC = "0";
+//	string BinToDec = "1";
+//	int temp;
+//	int Count = 0;
+//	int LastBit = 1;
+//	bool Sign = false;
+//	if ((x.data[3] & (1 << 31)) == 1) // dịch phải 31 bit tìm bit dấu
+//	{
+//		doiDau(x);
+//		Sign = true;
+//	}
+//	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt++)
+//	{
+//		temp = x.data[iterOnQInt];
+//		while (temp > 0)
+//		{
+//			int Bit = temp % 2;
+//			if (Bit == 1)
+//			{
+//				while (LastBit > Count) // LastBit là vị trí bit 1 trước đó, Count là vị trí bit 1 đang xét.
+//				{
+//					BinToDec = BinToDec * "2";
+//					LastBit++;
+//				}
+//				LastDEC = LastDEC + BinToDec; // tính giá trị từng bit 1 sau đó cộng vào chuỗi chính
+//			}
+//			Count++;
+//			temp = temp / 2;
+//		}
+//	}
+//	if (Sign == true)
+//	{
+//		// thêm dấu trừ vào đầu chuỗi LastDEC cho t nha t k biết thêm sao cho gọn :))
+//	}
+//	cout << LastDEC;
+//}

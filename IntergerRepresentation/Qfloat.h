@@ -11,3 +11,6 @@ struct Qfloat
 
 void ScanQfloat(Qfloat &x);
 void PrintQfloat(Qfloat x);
+
+Qfloat BinToDec(bool *bit);
+bool *DecToBin(Qfloat x);
