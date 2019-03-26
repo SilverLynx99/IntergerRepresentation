@@ -480,27 +480,183 @@ QInt operator/(QInt a, QInt b)
 
 bool operator<(const QInt & a, const QInt & b)
 {
-	return false;
+	bool *s1 = DecToBin(a);
+	bool *s2 = DecToBin(b);
+	if (s1[0] == true && s2[0] == false)
+		return true;
+	else if (s1[0] == false && s2[0] == true)
+		return false;
+	else if (s1[0] == false && s2[0] == false)
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return true;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return false;
+			}
+			cnt1++;
+		}
+		return false;
+	}
+	else if (s1[0] == true && s2[0] == true)
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return false;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return true;
+			}
+			cnt1++;
+		}
+		return false;
+	}
 }
 
 bool operator>(const QInt & a, const QInt & b)
 {
-	return false;
+	bool *s1 = DecToBin(a);
+	bool *s2 = DecToBin(b);
+	if (s1[0] == true && s2[0] == false)
+		return false;
+	else if (s1[0] == false && s2[0] == true)
+		return true;
+	else if (s1[0] == false && s2[0] == false) //TH: 2 so DUONG
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return false;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return true;
+			}
+			cnt1++;
+		}
+		return false;
+	}
+	else if (s1[0] == true && s2[0] == true) //TH: 2 so AM
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return true;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return false;
+			}
+			cnt1++;
+		}
+		return false;
+	}
 }
 
 bool operator>=(const QInt & a, const QInt & b)
 {
-	return false;
+	bool *s1 = DecToBin(a);
+	bool *s2 = DecToBin(b);
+	if (s1[0] == true && s2[0] == false)
+		return false;
+	else if (s1[0] == false && s2[0] == true)
+		return true;
+	else if (s1[0] == false && s2[0] == false)
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return false;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return true;
+			}
+			cnt1++;
+		}
+		return true;
+	}
+	else if (s1[0] == true && s2[0] == true)
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return true;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return false;
+			}
+			cnt1++;
+		}
+		return true;
+	}
 }
 
 bool operator<=(const QInt & a, const QInt & b)
 {
-	return false;
+	bool *s1 = DecToBin(a);
+	bool *s2 = DecToBin(b);
+	if (s1[0] == true && s2[0] == false)
+		return true;
+	else if (s1[0] == false && s2[0] == true)
+		return false;
+	else if (s1[0] == false && s2[0] == false)
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return true;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return false;
+			}
+			cnt1++;
+		}
+		return true;
+	}
+	else if (s1[0] == true && s2[0] == true)
+	{
+		int cnt1 = 1;
+		while (cnt1 < 128)
+		{
+			if (s1[cnt1] == false && s2[cnt1] == true) {
+				return false;
+			}
+			else if (s1[cnt1] == true && s2[cnt1] == false) {
+				return true;
+			}
+			cnt1++;
+		}
+		return true;
+	}
 }
 
 bool operator==(const QInt & a, const QInt & b)
 {
-	return false;
+	bool *s1 = DecToBin(a);
+	bool *s2 = DecToBin(b);
+	if (s1[0] == true && s2[0] == false)
+		return false;
+	else if (s1[0] == false && s2[0] == true)
+		return false;
+	else
+	{
+		int cnt = 1;
+		while (cnt < 128)
+		{
+			if (s1[cnt] != s2[cnt])
+				return false;
+			cnt++;
+		}
+		return true;
+	}
 }
 
 QInt operator<<(const QInt & a, int b)
