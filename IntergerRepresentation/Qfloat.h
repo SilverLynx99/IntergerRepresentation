@@ -10,3 +10,4 @@ struct Qfloat
 };
 
 void ScanQfloat(Qfloat &x);
+void PrintQfloat(Qfloat x);

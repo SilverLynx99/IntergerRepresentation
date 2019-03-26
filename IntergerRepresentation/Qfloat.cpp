@@ -171,74 +171,142 @@ bool *DecToBin(Qfloat x)
 }
 
 
-void printQFloat(Qfloat x)
+void PrintQfloat(Qfloat x)
 {
-	string LastFloat = "0";
-	string QFloatToFloat = "1";
-	string QfloatToBin;
+	int i, exp = 0, temp1, temp2;
 	bool sign = false;
-	int E = 0;
-	int DEC;
-	int Mu;
-	int LastBit;
-	for (int iterOnQFloat = 0; iterOnQFloat < 4; iterOnQFloat++)
+	//Lấy phần mũ và dấu
+	//Lấy phần mũ
+	temp1 = x.Data[0] >> 16;
+	for (i = 0; i <= 14; i++)
 	{
-		int temp = x.Data[iterOnQFloat];
-		LastBit = 0;              // là vị trí của bit 1 trước đó so với bit 1 đang xét trong phần tính thập phân
-		for (int i = 0; i <= 31; i++)
+		temp2 = (temp1 >> i) & 1;
+		if (temp2 == 1)
+			exp |= (temp2 << i);
+	}
+	exp -= 16383; //Trừ đi 2^14-1 để ra được số E
+	//Lấy phần dấu
+	temp1 >>= 15;
+	if ((temp1 & 1) == 1)
+		sign = true;
+
+	////////////////////////////////////////
+	//Lấy phần nguyên và thập phân
+	//Lấy phần nguyên
+	string dec = "0"; //Chuỗi chứa phần nguyên
+	string add = "1"; //Chuỗi tính phép 2 mũ 
+	int count = 0; //Tính vị trí của bit
+	int countExp = 0; //Tính mũ để nhân 2
+	int bit; //Lấy bit
+	bool check = false; //Nếu phần nguyên = 0 thì phần thập phân sẽ có thêm một bit 1 ở đầu
+	int j, index, moveBit;
+	if (exp == 0) //Khi mũ = 0
+	{
+		dec = "1";
+		index = 0;
+		temp1 = x.Data[0] >> 16;
+	}
+	else if (exp > 0) //Khi mũ > 0, nếu mũ < 0 thì phần nguyên = 0
+	{
+		int max;
+		index = 3 - (112 - exp) / 32; //Lấy vị trí mảng Qfloat
+		moveBit = (112 - exp) % 32; //Tính số bit cần dịch phải
+		temp1 = x.Data[index] << (32 - moveBit); //Dịch trái để lấy phần thập phân 
+		temp2 = x.Data[index] >> moveBit; //Dịch bit sang phải để lấy bit phần nguyên
+
+		if (index != 0) //Tính lượng bit cần duyệt ở mỗi ô Qfloat
+			max = 32 - moveBit;
+		else
+			max = 16 - moveBit;
+
+		for (i = index; i >= 0; i--) //Duyết từ phải qua trái
 		{
-			int Bit = temp & (1 << i);
-			if (iterOnQFloat == 0)
+			if (i != index)
 			{
-				if (Bit == 1 && i == 0)
-				{
-					sign = true;
-					continue;
-				}
-				if (i <= 15) // tìm E
-				{
-					E += pow(2, 15 - i) * Bit;
-				}
-				if (i == 16) // tìm Mũ
-				{
-					Mu = E - pow(2, 14) + 1;
-					DEC = pow(2, Mu); // đây là giá trị bit 1 đầu tiên của phần nguyên
-				}
-				if (i > 16)
-				{
-					while (Mu > 0) // tìm giá trị của phần nguyên
-					{
-						DEC += pow(2, 16 + Mu - i);
-						Mu--;
-						i++;
-						LastBit = i; // nhớ bit đầu cho phần thập phân
-						Bit = temp >> i;
-					}
-					if (Bit == 1) 
-					{
-						while (LastBit <= i) // chạy từ bit trước đó đến bit tại vị trí i
-						{
-							QFloatToFloat = QFloatToFloat / 2;
-							LastBit++;
-						}
-						LastFloat = LastFloat + QFloatToFloat; // + vô kết quả cuối
-					}
-				}
+				temp2 = x.Data[i]; //Gán ô tiếp theo
+				if (i == 0) //Cập nhật max sau mỗi vòng lặp
+					max = 16;
+				else
+					max = 32;
 			}
-			else
+
+			for (j = 0; j < max; j++)
 			{
-				if (Bit == 1)
+				bit = (temp2 >> j) & 1; //Lấy bit tại vị trí j
+				if (bit == 1) //Đồng nghĩa bit cuối là 1
 				{
-					while (LastBit <= i)
+					while (countExp < count) //Tương đương phép tính 2^countExp
 					{
-						QFloatToFloat = QFloatToFloat / 2;
-						LastBit++;
+						add = add * "2";
+						countExp++;
 					}
-					LastFloat = LastFloat + QFloatToFloat;
+					dec = dec + add;
 				}
+				count++;
 			}
 		}
+
+		while (countExp < count) //Thêm một bit 1 ở đầu bị bỏ khi chuyển sang chấm động
+		{
+			add = add * "2";
+			countExp++;
+		}
+		dec = dec + add;
 	}
-	LastFloat = LastFloat + to_string(DEC);
-	cout << LastFloat;
+	else
+	{
+		index = 0;
+		moveBit = 16;
+		temp1 = x.Data[0] << moveBit;
+		check = true;
+	}
+
+	//Lấy phần thập phân
+	string fract = "0"; //Chuỗi chưa phần thập phân
+	string div2 = "1"; //Chuỗi thực hiện phép tính 2^âm
+	count = countExp = 0;
+	if (check) //Cộng thêm bit đầu ở thập phân nếu mũ âm
+	{
+		while (exp < 0)
+		{
+			div2 = divReal(div2, 2);
+			exp++;
+		}
+		fract = addReal(fract, div2);
+	}
+
+	for (i = index; i <= 3; i++)
+	{
+		if (x.Data[i] == 0)
+			break;
+
+		if (i != index)
+		{
+			moveBit = 32;
+			temp1 = x.Data[i];
+		}
+
+		for (j = 0; j < moveBit; j++)
+		{
+			bit = (temp1 << j) & (1 << 31); //Lấy bit tại vị trí j
+			if (bit == (1 << 31)) //Đồng nghĩa bit đầu là 1
+			{
+				while (countExp < count + 1) //Tương đương phép tính 2^-countExp
+				{
+					div2 = divReal(div2, 2);
+					countExp++;
+				}
+				fract = addReal(fract, div2);
+			}
+			count++;
+		}
+	}
+
+	//Nối phần nguyên và thập phân sau đó thêm dâu âm (nếu có)
+	fract.erase(0, 1);
+	dec += fract;
+	if (sign) //Thêm dấu âm
+		dec.insert(0, 1, '-');
+
+	cout << dec << endl;
 }
