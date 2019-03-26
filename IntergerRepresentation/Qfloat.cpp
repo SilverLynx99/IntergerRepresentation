@@ -169,3 +169,76 @@ bool *DecToBin(Qfloat x)
 	}
 	return bitArray;
 }
+
+
+void printQFloat(Qfloat x)
+{
+	string LastFloat = "0";
+	string QFloatToFloat = "1";
+	string QfloatToBin;
+	bool sign = false;
+	int E = 0;
+	int DEC;
+	int Mu;
+	int LastBit;
+	for (int iterOnQFloat = 0; iterOnQFloat < 4; iterOnQFloat++)
+	{
+		int temp = x.Data[iterOnQFloat];
+		LastBit = 0;              // là vị trí của bit 1 trước đó so với bit 1 đang xét trong phần tính thập phân
+		for (int i = 0; i <= 31; i++)
+		{
+			int Bit = temp >> i;
+			if (iterOnQFloat == 0)
+			{
+				if (Bit == 1 && i == 0)
+				{
+					sign = true;
+					continue;
+				}
+				if (i <= 15) // tìm E
+				{
+					E += pow(2, 15 - i) * Bit;
+				}
+				if (i == 16) // tìm Mũ
+				{
+					Mu = E - pow(2, 14) + 1;
+					DEC = pow(2, Mu); // đây là giá trị bit 1 đầu tiên của phần nguyên
+				}
+				if (i > 16)
+				{
+					while (Mu > 0) // tìm giá trị của phần nguyên
+					{
+						DEC += pow(2, 16 + Mu - i);
+						Mu--;
+						i++;
+						LastBit = i; // nhớ bit đầu cho phần thập phân
+						Bit = temp >> i;
+					}
+					if (Bit == 1) 
+					{
+						while (LastBit <= i) // chạy từ bit trước đó đến bit tại vị trí i
+						{
+							QFloatToFloat = QFloatToFloat / 2;
+							LastBit++;
+						}
+						LastFloat = LastFloat + QFloatToFloat; // + vô kết quả cuối
+					}
+				}
+			}
+			else
+			{
+				if (Bit == 1)
+				{
+					while (LastBit <= i)
+					{
+						QFloatToFloat = QFloatToFloat / 2;
+						LastBit++;
+					}
+					LastFloat = LastFloat + QFloatToFloat;
+				}
+			}
+		}
+	}
+	LastFloat = LastFloat + to_string(DEC);
+	cout << LastFloat;
+}

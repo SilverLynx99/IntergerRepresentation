@@ -334,6 +334,7 @@ char arrOfHexCode[] = { '0', '1', '2', '3',
 						'4', '5', '6', '7',
 						'8', '9', 'A', 'B',
 						'C', 'D', 'E', 'F' };
+
 char * BinToHex(bool * bit)
 {
 	// Tạo một mảng bit phụ
@@ -567,4 +568,43 @@ void doiDau(QInt&inp)
 		}
 		j = 0; // Set lại j để bắt đầu vòng lặp mới.
 	}
+}
+
+void PrintQInt(QInt x)
+{
+	string LastDEC = "0";
+	string BinToDec = "1";
+	int temp;
+	int Count = 0;
+	int LastBit = 1;
+	bool Sign = false;
+	if ((x.data[3] >> 31) == 1) // dịch phải 31 bit tìm bit dấu
+	{
+		doiDau(x);
+		Sign = true;
+	}
+	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt++)
+	{
+		temp = x.data[iterOnQInt];
+		while (temp > 0)
+		{
+			int Bit = temp % 2;
+			if (Bit == 1)
+			{
+				while (LastBit > Count) // LastBit là vị trí bit 1 trước đó, Count là vị trí bit 1 đang xét.
+				{
+					BinToDec = BinToDec * "2";
+					LastBit++;
+				}
+				LastDEC = LastDEC + BinToDec; // tính giá trị từng bit 1 sau đó cộng vào chuỗi chính
+			}
+			Count++;
+			temp = temp / 2;
+		}
+	}
+	if (Sign == true)
+	{
+		// thêm dấu trừ vào đầu chuỗi LastDEC cho t nha t k biết thêm sao cho gọn :))
+	}
+	cout << LastDEC;
 }
