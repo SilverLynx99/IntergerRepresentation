@@ -578,7 +578,7 @@ void PrintQInt(QInt x)
 	int Count = 0;
 	int LastBit = 1;
 	bool Sign = false;
-	if ((x.data[3] >> 31) == 1) // dịch phải 31 bit tìm bit dấu
+	if ((x.data[3] & (1 << 31)) == 1) // dịch phải 31 bit tìm bit dấu
 	{
 		doiDau(x);
 		Sign = true;

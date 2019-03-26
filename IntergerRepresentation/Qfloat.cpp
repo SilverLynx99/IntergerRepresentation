@@ -187,7 +187,7 @@ void printQFloat(Qfloat x)
 		LastBit = 0;              // là vị trí của bit 1 trước đó so với bit 1 đang xét trong phần tính thập phân
 		for (int i = 0; i <= 31; i++)
 		{
-			int Bit = temp >> i;
+			int Bit = temp & (1 << i);
 			if (iterOnQFloat == 0)
 			{
 				if (Bit == 1 && i == 0)
