@@ -1,9 +1,8 @@
 ﻿#include "QFloat.h"
-#include "UtilityFunc.h"
 
 void ScanQfloat(Qfloat &x)
 {
-	string NumberFloat = "0.392578125";
+	string NumberFloat = "-5.25";
 	string DECint; // chứa phần nguyên
 	string DECfloat; // chứa phần thực
 	vector<char> bitFract; // chứa bit phần định trị
@@ -115,57 +114,142 @@ void ScanQfloat(Qfloat &x)
 	}
 }
 
-
-
-Qfloat BinToDec(bool *bit)
+void PrintQfloat(Qfloat x)
 {
-	Qfloat tempStorage;
-
-	// Biến lưu lại chuỗi bit để thực hiện phép OR
-	int bitforOR;
-
-	// Duyệt trên mảng bool.
-	for (int iterOnBit = 0; iterOnBit <= 127; iterOnBit++)
+	int i, exp = 0, temp1, temp2;
+	bool sign = false;
+	//Lấy phần mũ và dấu
+	//Lấy phần mũ
+	temp1 = x.Data[0] >> 16;
+	for (i = 0; i <= 14; i++)
 	{
-		// Nếu đúng, bật bit tại đúng vị trí của tempStorage
-		if (bit[iterOnBit]) {
-			bitforOR = (1 << (31 - (iterOnBit % 32)));
-			tempStorage.Data[iterOnBit / 32] |= bitforOR;
-		}
+		temp2 = (temp1 >> i) & 1;
+		if (temp2 == 1)
+			exp |= (temp2 << i);
 	}
+	exp -= 16383; //Trừ đi 2^14-1 để ra được số E
+	//Lấy phần dấu
+	temp1 >>= 15;
+	if ((temp1 & 1) == 1)
+		sign = true;
 
-	return tempStorage;
-}
-
-
-bool *DecToBin(Qfloat x)
-{
-	// Allocate an array of bool (128B), every bool store a bit
-	bool *bitArray = new bool[128];
-
-	// Set các bit bằng 0
-	for (int i = 0; i < 127; i++)
-		bitArray[i] = false;
-
-	// Biến tạm
-	int temp, iterOnbitArray = 1;
-
-	// Duyệt trên từng khối int của Qfloat (4 khối
-	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt--)
+	////////////////////////////////////////
+	//Lấy phần nguyên và thập phân
+	//Lấy phần nguyên
+	string dec = "0"; //Chuỗi chứa phần nguyên
+	string add = "1"; //Chuỗi tính phép 2 mũ 
+	int count = 0; //Tính vị trí của bit
+	int countExp = 0; //Tính mũ để nhân 2
+	int bit; //Lấy bit
+	bool check = false; //Nếu phần nguyên = 0 thì phần thập phân sẽ có thêm một bit 1 ở đầu
+	int j, index, moveBit;
+	if (exp == 0) //Khi mũ = 0
 	{
-		// Lưu tạm từng khối int để xử lý
-		temp = x.Data[iterOnQInt];
+		dec = "1";
+		index = 0;
+		temp1 = x.Data[0] >> 16;
+	}
+	else if (exp > 0) //Khi mũ > 0, nếu mũ < 0 thì phần nguyên = 0
+	{
+		int max;
+		index = 3 - (112 - exp) / 32; //Lấy vị trí mảng Qfloat
+		moveBit = (112 - exp) % 32; //Tính số bit cần dịch phải
+		temp1 = x.Data[index] << (32 - moveBit); //Dịch trái để lấy phần thập phân 
+		temp2 = x.Data[index] >> moveBit; //Dịch bit sang phải để lấy bit phần nguyên
+	
+		if (index != 0) //Tính lượng bit cần duyệt ở mỗi ô Qfloat
+			max = 32 - moveBit;
+		else
+			max = 16 - moveBit;
 
-		// Lấy tất cả bit của một khối int, tạo vòng lặp
-		// để chạy thôi
-		for (int i = 1; i <= 32; i++)
+		for (i = index; i >= 0; i--) //Duyết từ phải qua trái
 		{
-			bitArray[128 - iterOnbitArray] = (temp & 1);
-			temp = temp >> 1;
+			if (i != index)
+			{
+				temp2 = x.Data[i]; //Gán ô tiếp theo
+				if (i == 0) //Cập nhật max sau mỗi vòng lặp
+					max = 16;
+				else
+					max = 32;
+			}
 
-			// Tăng giá trị biến đếm của mảng bitArray
-			iterOnbitArray++;
+			for (j = 0; j < max; j++)
+			{
+				bit = (temp2 >> j) & 1; //Lấy bit tại vị trí j
+				if (bit == 1) //Đồng nghĩa bit cuối là 1
+				{
+					while (countExp < count) //Tương đương phép tính 2^countExp
+					{
+						add = add * "2";
+						countExp++;
+					}
+					dec = dec + add;
+				}
+				count++;
+			}
+		}
+
+		while (countExp < count) //Thêm một bit 1 ở đầu bị bỏ khi chuyển sang chấm động
+		{
+			add = add * "2"; 
+			countExp++;
+		}
+		dec = dec + add;
+	}
+	else
+	{
+		index = 0;
+		moveBit = 16;
+		temp1 = x.Data[0] << moveBit;
+		check = true;
+	}
+
+	//Lấy phần thập phân
+	string fract = "0"; //Chuỗi chưa phần thập phân
+	string div2 = "1"; //Chuỗi thực hiện phép tính 2^âm
+	count = countExp = 0;
+	if (check) //Cộng thêm bit đầu ở thập phân nếu mũ âm
+	{
+		while (exp < 0)
+		{
+			div2 = divReal(div2, 2);
+			exp++;
+		}
+		fract = addReal(fract, div2);
+	}
+	
+	for (i = index; i <= 3; i++)
+	{
+		if (x.Data[i] == 0)
+			break;
+
+		if (i != index)
+		{
+			moveBit = 32;
+			temp1 = x.Data[i];
+		}
+
+		for (j = 0; j < moveBit; j++)
+		{
+			bit = (temp1 << j) & (1 << 31); //Lấy bit tại vị trí j
+			if (bit == (1 << 31)) //Đồng nghĩa bit đầu là 1
+			{
+				while (countExp < count + 1) //Tương đương phép tính 2^-countExp
+				{
+					div2 = divReal(div2, 2);
+					countExp++;
+				}
+				fract = addReal(fract, div2);
+			}
+			count++;
 		}
 	}
-	return bitArray;
+
+	//Nối phần nguyên và thập phân sau đó thêm dâu âm (nếu có)
+	fract.erase(0, 1);
+	dec += fract;
+	if (sign) //Thêm dấu âm
+		dec.insert(0, 1, '-');
+
+	cout << dec << endl;
 }

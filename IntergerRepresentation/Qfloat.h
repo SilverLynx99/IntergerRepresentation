@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <vector>
+#include "UtilityFunc.h"
 
 struct Qfloat
 {

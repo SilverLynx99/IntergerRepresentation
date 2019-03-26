@@ -244,6 +244,19 @@ void standardRealNum(REALNUM &num1, REALNUM &num2)
 	num2.num.insert(num2.num.length(), maxPoint - num2.point, '0');
 }
 
+string addReal(string num1, string num2)
+{
+	REALNUM sum, a, b;
+	//Chuyển kiểu string sang REALNUM
+	a = convertToRealNum(num1);
+	b = convertToRealNum(num2);
+	standardRealNum(a, b);
+	sum.num = a.num + b.num; //Cộng số nguyên bình thường
+	sum.point = max(a.point, b.point); //phần thập phân của kết quả bằng phần thập phân lớn nhất trong 2 số
+	return convertToString(sum);
+}
+
+
 string subReal(string num1, string num2)
 {
 	REALNUM sub, a, b;
@@ -299,6 +312,21 @@ string divReal(string num1, int num2)
 	div.num = a.num / num2; //Lấy phần nguyên
 
 	div.num += dFract; //Nối 2 phần lại
-	div.point = dFract.length(); //Dấu thập phân sẽ bằng độ dài phần thập phân
+	if (a.point != 0) //Nếu là một số thập phân
+	{
+		int count = 0;
+		int x = div.num.length();  //Tính chiều dài chuỗi
+		div.point = dFract.length() + a.point; //Dấu thập phân bằng độ dài phần thập dFract + a.point
+		if (a.num[0] == '0')
+		{
+			while (count < (div.point - x)) //Thêm số 0 tương ứng với độ chênh lệch độ dài chuỗi và phần thập phân
+			{
+				div.num.insert(0, 1, '0');
+				count++;
+			}
+		}
+	}
+	else
+		div.point = dFract.length(); //Dấu thập phân sẽ bằng độ dài phần thập phân
 	return convertToString(div);
 }
