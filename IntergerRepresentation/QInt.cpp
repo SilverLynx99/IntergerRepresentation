@@ -13,6 +13,20 @@ bool KiemTraOperator(vector<string> optList, string x)
 	return false;
 }
 
+// ham chuan hoa chuoi Binary khi do dai khong du 128 bit
+void standardStrBin(string &opr)
+{
+	string tmp = "";
+	int i = 0;
+	while (i < 128 - opr.length())
+	{
+		tmp.push_back('0');
+		i++;
+	}
+	tmp += opr;
+	opr = tmp;
+}
+
 bool processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// How to write
@@ -33,20 +47,13 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 				opr1 = ptemp2;
 				if ((p1 == "2") && (opr1.length() < 128))
 				{
-					string tmp;
-					int i = 0;
-					while (i < 128 - opr1.length())
-					{
-						tmp.push_back('0');
-						i++;
-					}
-					tmp += opr1;
-					opr1 = tmp;
+					standardStrBin(opr1);
 				}
 				//xu li dong tai day voi bien opr1 la toan hang duy nhat cua dong
 				if (p1 == "10" && p2 == "2")
 				{
 					//thuc hien chuyen doi DecToBin
+					
 				}
 				else if (p1 == "2" && p2 == "10")
 				{
@@ -66,31 +73,13 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 				opr1 = ptemp;
 				opt = ptemp2;
 				inputFile >> opr2;
-				string tmp;
-				int i;
 				if ((p1 == "2") && (opr1.length() < 128))
 				{
-					tmp = "";
-					i = 0;
-					while (i < 128 - opr1.length())
-					{
-						tmp.push_back('0');
-						i++;
-					}
-					tmp += opr1;
-					opr1 = tmp;
+					standardStrBin(opr1);
 				}
 				if ((p1 == "2") && (opr2.length() < 128))
 				{
-					tmp = "";
-					i = 0;
-					while (i < 128 - opr2.length())
-					{
-						tmp.push_back('0');
-						i++;
-					}
-					tmp += opr2;
-					opr2 = tmp;
+					standardStrBin(opr2);
 				}
 			}
 		}
@@ -99,39 +88,25 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 			opr1 = ptemp; //copy ptemp vao opr1(toan hang thu 1)
 			inputFile >> opt; //doc toan tu
 			inputFile >> opr2; //doc toan hang thu 2
-			string tmp;
-			int i;
 			if ((p1 == "2") && (opr1.length() < 128))
 			{
-				tmp = "";
-				i = 0;
-				while (i < 128 - opr1.length())
-				{
-					tmp.push_back('0');
-					i++;
-				}
-				tmp += opr1;
-				opr1 = tmp;
+				standardStrBin(opr1);
 			}
 			if ((p1 == "2") && (opr2.length() < 128))
 			{
-				tmp = "";
-				i = 0;
-				while (i < 128 - opr2.length())
-				{
-					tmp.push_back('0');
-					i++;
-				}
-				tmp += opr2;
-				opr2 = tmp;
+				standardStrBin(opr2);
 			}
 		}
+		//cout << p1 << "\n" << p2 << "\n" << opr1 << "\n" << opt << "\n" << opr2;
+		//cout << "\n\n";
 		if (opt != "") //thuc hien cac dong co toan tu (+, -, *, /, <, >, ...)
 		{
 			if (opt == "+")
 			{
 				//thuc hien toan tu CONG
+				
 			}
+
 			else if (opt == "-")
 			{
 				//thuc hien toan tu TRU
@@ -144,56 +119,33 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 			{
 				//thuc hien toan tu CHIA
 			}
-			/*else if (opt == "<" || opt == ">" || opt == "<=" || opt == ">=" || opt == "==")
+			else if (opt == "<" || opt == ">" || opt == "<=" || opt == ">=" || opt == "==")
 			{
-				if (p1 == "10")
-				{
-					QInt s1, s2;
-					ScanQInt(s1, opr1);
-					ScanQInt(s2, opr2);
-					bool *ss1;
-					bool *ss2;
-					ss1 = DecToBin(s1);
-					ss2 = DecToBin(s2);
-					ConvertBinToString(ss1, opr1);
-					ConvertBinToString(ss2, opr2);
-				}
 				if (opt == "<")
 				{
 					//thuc hien so sanh BE HON
-					if (opr1 < opr2)
-						outputFile << "True\n";
-					else outputFile << "False\n";
+					
 				}
 				else if (opt == ">")
 				{
 					//thuc hien so sanh LON HON
-					if (opr1 > opr2)
-						outputFile << "True\n";
-					else outputFile << "False\n";
+					
 				}
 				else if (opt == "<=")
 				{
 					//thuc hien so sanh BE BANG
-					if (opr1 <= opr2)
-						outputFile << "True\n";
-					else outputFile << "False\n";
+					
 				}
 				else if (opt == ">=")
 				{
-					//thuc hien so sanh LON BANG
-					if (opr1 >= opr2)
-						outputFile << "True\n";
-					else outputFile << "False\n";
+					
 				}
 				else if (opt == "==")
 				{
 					//thuc hien so sanh BANG
-					if (opr1 == opr2)
-						outputFile << "True\n";
-					else outputFile << "False\n";
+					
 				}
-			}*/
+			}
 			else if (opt == "&")
 			{
 				//thuc hien toan tu AND
@@ -227,9 +179,6 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 				//thuc hien toan tu XOAY PHAI
 			}
 		}
-		
-		//cout << p1 << "\n" << p2 << "\n" << opr1 << "\n" << opt << "\n" << opr2;
-		//cout << "\n\n";
 	}
 
 	return false;
