@@ -114,3 +114,58 @@ void ScanQfloat(Qfloat &x)
 		count--;
 	}
 }
+
+
+
+Qfloat BinToDec(bool *bit)
+{
+	Qfloat tempStorage;
+
+	// Biến lưu lại chuỗi bit để thực hiện phép OR
+	int bitforOR;
+
+	// Duyệt trên mảng bool.
+	for (int iterOnBit = 0; iterOnBit <= 127; iterOnBit++)
+	{
+		// Nếu đúng, bật bit tại đúng vị trí của tempStorage
+		if (bit[iterOnBit]) {
+			bitforOR = (1 << (31 - (iterOnBit % 32)));
+			tempStorage.Data[iterOnBit / 32] |= bitforOR;
+		}
+	}
+
+	return tempStorage;
+}
+
+
+bool *DecToBin(Qfloat x)
+{
+	// Allocate an array of bool (128B), every bool store a bit
+	bool *bitArray = new bool[128];
+
+	// Set các bit bằng 0
+	for (int i = 0; i < 127; i++)
+		bitArray[i] = false;
+
+	// Biến tạm
+	int temp, iterOnbitArray = 1;
+
+	// Duyệt trên từng khối int của Qfloat (4 khối
+	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt--)
+	{
+		// Lưu tạm từng khối int để xử lý
+		temp = x.Data[iterOnQInt];
+
+		// Lấy tất cả bit của một khối int, tạo vòng lặp
+		// để chạy thôi
+		for (int i = 1; i <= 32; i++)
+		{
+			bitArray[128 - iterOnbitArray] = (temp & 1);
+			temp = temp >> 1;
+
+			// Tăng giá trị biến đếm của mảng bitArray
+			iterOnbitArray++;
+		}
+	}
+	return bitArray;
+}
