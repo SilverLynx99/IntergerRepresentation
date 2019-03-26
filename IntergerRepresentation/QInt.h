@@ -38,7 +38,30 @@ public:
 	bool operator<= (const QInt & a)const;
 	bool operator== (const QInt & a)const;
 	//--
-	
+
+	// -- CHUYỂN ĐỔI GIỮA CÁC KIỂU DỮ LIỆU
+
+	// Chuyển đổi từ QInt sang nhị phân và lưu mã nhị phân 
+// bằng một mảng 128 bytes.
+// Cách làm: chỉ cần lấy bit và lưu lại.
+// LƯU Ý HỦY CẤP PHÁT MẢNG BOOL
+	static bool *DecToBin(QInt x);
+
+	// Chuyển đổi dãy nhị phân thành QInt
+// WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
+// LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
+
+	static QInt BinToDec(bool * bit);
+
+	// Chuyển đỗi dãy nhị phân thành mã hex
+// Output: một chuỗi hex có 32 ký tự, có cả ký tự '0'
+	static char * BinToHex(bool * bit);
+
+	// Chuyển đổi QInt sang Hex
+// Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
+	static char * DecToHex(QInt x);
+
+	//--
 	// Xử lý nhập liệu
 	friend istream& operator>> (istream& is, QInt & inp)
 	{
@@ -85,7 +108,7 @@ public:
 		return is;
 	}
 
-	friend ostream& operator<< (ostream& os,const QInt& out)
+	friend ostream& operator<< (ostream& os, const QInt& out)
 	{
 		int temp;
 		for (int j = 0; j < 4; j++) {
@@ -102,7 +125,7 @@ public:
 
 		return os;
 	}
-	
+
 private:
 	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
 	// đi từ trái qua phải
@@ -119,14 +142,14 @@ private:
 	// Kiểm tra một số có phải là âm không ?
 	bool ktAm() const;
 
-
+	bool getBitAtIdx(int idx)const;
 	void DichTraiDacBiet(QInt &a);
 	// ---
 };
 
 struct test
 {
-	
+
 	int data[4] = { 0 };
 };
 
@@ -136,25 +159,3 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
 
 
-
-
-// --- XỬ LÝ CHUYỂN ĐỔI
-
-// Chuyển đổi từ QInt sang nhị phân và lưu mã nhị phân 
-// bằng một mảng 128 bytes.
-// Cách làm: chỉ cần lấy bit và lưu lại.
-// LƯU Ý HỦY CẤP PHÁT MẢNG BOOL
-bool *DecToBin(test x);
-
-// Chuyển đổi dãy nhị phân thành QInt
-// WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
-// LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
-test BinToDec(bool *bit);
-
-// Chuyển đỗi dãy nhị phân thành mã hex
-// Output: một chuỗi hex có 32 ký tự, có cả ký tự '0'
-char * BinToHex(bool *bit);
-
-// Chuyển đổi QInt sang Hex
-// Output: Một chuỗi hex có 32 ký tự, có cả ký tự '0'
-char * DecToHex(test x);

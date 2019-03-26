@@ -11,7 +11,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	QInt a;
-	QInt b;
+	
 	cin >> a;
 	//int c;
 	//cin >> c;
@@ -21,12 +21,6 @@ int main(int argc, char* argv[])
 	cout << a << endl;
 	cout << (a >> 128) << endl;
 
-	//test a, b;
-	//printf("Nhap so a: ");
-	//ScanQInt(a);
-	//printf("Nhap so b: ");
-	//ScanQInt(b);
-
 	//// In ra chuỗi bit trong mảng bool
 	////for (int i = 1; i <= 128; i++)
 	////{
@@ -34,9 +28,9 @@ int main(int argc, char* argv[])
 	////	if (i % 8 == 0) printf(" ");
 	////}
 
-	//printf("\n");
-	//char * hexCode = DecToHex(b);
-	//printf("%s", hexCode);
+	printf("\n");
+	char * hexCode = QInt::DecToHex(a);
+	printf("%s", hexCode);
 
 	//printf("\n");
 

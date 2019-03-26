@@ -225,6 +225,13 @@ bool QInt::ktAm() const
 	return ((this->data[0] >> 31 & 1)) == 1 ? true : false;
 }
 
+bool QInt::getBitAtIdx(int idx)const
+{
+	int i = idx / 32, j = idx % 32;
+	int bit = (this->data[i] >> j) & 1;
+	return bit == 1 ? true : false;
+}
+
 void QInt::DichTraiDacBiet(QInt &a)
 {
 	if ((a.data[0] >> 32 & 1) == 1)
@@ -400,27 +407,201 @@ bool QInt::operator>(const QInt & a) const
 	// Trường hợp khác dấu
 	if (this->ktAm() != a.ktAm())
 		return (this->ktAm() ? false : true);
-
+	
 	// Trường hợp cùng dấu.
+	// Duyệt tìm sự sai khác bit.
+	for (int i = 0; i < 128; i++)
+		// Tìm thấy sự sai khác
+		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
+		{
+			// Cả 2 đều âm
+			if (this->getBitAtIdx(i - 1))
+				// Nếu bit này = 1 --> *this < a (số âm) --> false
+				return this->getBitAtIdx(i) ? false : true;
+			else // Cả 2 đều dương
+				// Nếu bit này = 1 --> *this > a (số dương) --> true
+				return this->getBitAtIdx(i) ? true : false;
+		}
+		
+	// Không tìm thấy sai khác
 	return false;
 }
 
 bool QInt::operator<(const QInt & a) const
 {
+	// Trường hợp khác dấu
+	if (this->ktAm() != a.ktAm())
+		// Số *this là âm thì nhỏ hơn
+		return (this->ktAm() ? true : false);
+
+	// Trường hợp cùng dấu.
+	// Duyệt tìm sự sai khác bit.
+	for (int i = 0; i < 128; i++)
+		// Tìm thấy sự sai khác
+		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
+		{
+			// Cả 2 đều âm
+			if (this->getBitAtIdx(i - 1))
+				// Nếu bit này = 1 --> *this < a (số âm) --> true
+				return this->getBitAtIdx(i) ? true : false;
+			else // Cả 2 đều dương
+				// Nếu bit này = 1 --> *this > a (số dương) --> false
+				return this->getBitAtIdx(i) ? false : true;
+		}
+
+	// Không tìm thấy sai khác
 	return false;
 }
 
 bool QInt::operator>=(const QInt & a) const
 {
-	return false;
+	return *this < a ? false : true;
 }
 
 bool QInt::operator<=(const QInt & a) const
 {
-	return false;
+	return *this > a ? false : true;
 }
 
 bool QInt::operator==(const QInt & a) const
 {
-	return false;
+	for (int i = 0; i < 128; i++)
+		// Tìm thấy sự sai khác
+		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
+			return false;
+
+	// Không tìm thấy sai khác
+	return true;
+}
+
+bool * QInt::DecToBin(QInt x)
+{
+	// Allocate an array of bool (128B), every bool store a bit
+	bool *bitArray = new bool[128];
+
+	// Set các bit bằng 0
+	for (int i = 0; i < 127; i++)
+		bitArray[i] = false;
+
+	// Biến tạm
+	int temp, iterOnbitArray = 1;
+
+	// Duyệt trên từng khối int của QInt (4 khối
+	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt--)
+	{
+		// Lưu tạm từng khối int để xử lý
+		temp = x.data[iterOnQInt];
+
+		// Lấy tất cả bit của một khối int, tạo vòng lặp
+		// để chạy thôi
+		for (int i = 1; i <= 32; i++)
+		{
+			bitArray[128 - iterOnbitArray] = (temp & 1);
+			temp = temp >> 1;
+
+			// Tăng giá trị biến đếm của mảng bitArray
+			iterOnbitArray++;
+		}
+	}
+	return bitArray;
+}
+
+QInt QInt::BinToDec(bool * bit)
+{
+	QInt tempStorage;
+
+	// Biến lưu lại chuỗi bit để thực hiện phép OR
+	int bitforOR;
+
+	// Duyệt trên mảng bool.
+	for (int iterOnBit = 0; iterOnBit <= 127; iterOnBit++)
+	{
+		// Nếu đúng, bật bit tại đúng vị trí của tempStorage
+		if (bit[iterOnBit]) {
+			bitforOR = (1 << (31 - (iterOnBit % 32)));
+			tempStorage.data[iterOnBit / 32] |= bitforOR;
+		}
+	}
+
+	return tempStorage;
+}
+
+// Mảng được tạo để truy xuất ký tự hexa
+char arrOfHexCode[] = { '0', '1', '2', '3',
+						'4', '5', '6', '7',
+						'8', '9', 'A', 'B',
+						'C', 'D', 'E', 'F' };
+char * QInt::BinToHex(bool * bit)
+{
+	// Tạo một mảng bit phụ
+	bool *tempBit = new bool[128];
+	for (int i = 0; i < 128; i++) {
+		tempBit[i] = bit[i];
+	}
+
+	// Số dương : sign = false, dương sign = true
+	bool sign = false;
+
+	// Nếu là số âm, thực hiện bù 2 phần đuôi
+	if (tempBit[0]) {
+		// tìm bit 1 đầu tiên từ cuối
+		int i = 127;
+		while (!tempBit[i]) {
+			i--;
+		}
+
+		// Thực hiện bù
+		do {
+			i--;
+			tempBit[i] = !tempBit[i];
+		} while (i > 0);
+
+		// Đánh dấu chuỗi bit này là chuỗi âm
+		sign = true;
+	}
+
+	// Cấp phát vùng nhớ để lưu chuỗi Hex
+	// 34 ký tự bao gồm dấu và phần giá trị
+	char SL_CapPhat = 34;
+	char *hexChar = new char[SL_CapPhat];
+
+	int tempSum;
+	int heSoNhan[] = { 1, 2, 4, 8 };
+
+	// Duyệt trên mảng tempBit
+	for (int i = 127; i >= 0;)
+	{
+		// Biến tạm tính tổng
+		tempSum = 0;
+
+		// Duyệt trên từng cụm 4bit để chuyển thành ký tự
+		for (int j = 0; j < 4; j++)
+		{
+			if (tempBit[i])	tempSum += heSoNhan[j];
+			i--;
+		}
+
+		// Đẩy ký tự vào mảng char. 
+		// Biểu thức (i + 1) / 4 để tính vị trí để 
+		// lưu ký tự vào mảng hex, và được cộng thêm
+		// 1 vì có một bit dấu ở ô 0
+		hexChar[((i + 1) / 4) + 1] = arrOfHexCode[tempSum];
+	}
+
+	// Đánh dấu kết thúc chuỗi
+	hexChar[SL_CapPhat - 1] = '\0';
+
+	// Chèn thêm dấu vào đầu chuỗi hex code
+	hexChar[0] = (sign ? '-' : '+');
+
+	delete[]tempBit;
+	return hexChar;
+}
+
+char * QInt::DecToHex(QInt x)
+{
+	bool * ptrBool = DecToBin(x);
+	char *ptrHexCode = BinToHex(ptrBool);
+	delete[]ptrBool;
+	return ptrHexCode;
 }
