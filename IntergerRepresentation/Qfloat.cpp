@@ -50,7 +50,7 @@ void ScanQfloat(Qfloat &x)
 		check = true;
 
 	//Chuyển phần thực sang bit
-	while ((DECfloat != ".0") && (DECfloat.size() != 0))
+	while ((DECfloat != "0.0") && (DECfloat.size() != 0))
 	{
 		DECfloat = mulReal(DECfloat, 2);
 		if (DECfloat[0] == '1')

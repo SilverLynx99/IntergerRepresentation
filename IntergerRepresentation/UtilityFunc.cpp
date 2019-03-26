@@ -79,9 +79,10 @@ string operator -(string num1, string num2)
 {
 	standard2String(num1, num2);
 	string sub;
-	if (num1 == num2)
+	//Nếu 2 số bằng nhau trả về 0
+	if (num1.compare(num2) == 0)
 	{
-		sub.insert(0, 1, '0');
+		sub = "0";
 		return sub;
 	}
 
@@ -116,6 +117,7 @@ string operator -(string num1, string num2)
 			mem = 1;
 		}
 
+		//Nếu kết thúc vòng for và kết quả trừ cuối cùng là 0 thì ko chèn thêm kết quả ở đầu.
 		if ((i == 0) && (rs == 0))
 			continue;
 
@@ -217,10 +219,15 @@ string convertToString(const REALNUM &num)
 		n--;
 	}
 
+	//Xóa chữ số 0 thừa ở phần thập phân
 	if (count == num.point)
 		s.erase(n + 1, count - 1);
 	else
 		s.erase(n + 1, count);
+
+	//Nếu là dạng 0.xx thì sẽ mất số 0 ở đầu nên phải chèn thêm 0
+	if (s[0] == '.')
+		s.insert(0, 1, '0');
 
 	return s;
 }
