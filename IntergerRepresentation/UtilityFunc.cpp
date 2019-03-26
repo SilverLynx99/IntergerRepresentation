@@ -159,13 +159,12 @@ int operator %(string num1, int num2)
 {
 	string mod = num1 / num2;
 
-	// CẦN COMMENT
-	char temp[3];
-	_itoa(num2, temp, 10);
+	// Chuyển số int sang chuỗi để thực hiện phép chuỗi nhân chuỗi
+	string temp = to_string(num2);
 
 	mod = num1 - (mod * temp);
 
-	// CẦN COMMENT
+	// Chuyển chuỗi kết quả về dạng int
 	return atoi(mod.c_str());
 }
 
@@ -241,6 +240,7 @@ void standardRealNum(REALNUM &num1, REALNUM &num2)
 string subReal(string num1, string num2)
 {
 	REALNUM sub, a, b;
+	//Chuyển kiểu string sang REALNUM
 	a = convertToRealNum(num1);
 	b = convertToRealNum(num2);
 	standardRealNum(a, b);
@@ -252,11 +252,46 @@ string subReal(string num1, string num2)
 string mulReal(string num1, int num2)
 {
 	REALNUM mul, a, b;
-	char temp[3];
-	_itoa(num2, temp, 10);
+	//Chuyển số sang chuỗi string
+	string temp = to_string(num2);
+	//Chuyển kiểu string sang REALNUM
 	a = convertToRealNum(num1);
 	b = convertToRealNum(temp);
 	mul.num = a.num*b.num; //Nhân số nguyên bình thường
 	mul.point = a.point + b.point; //Phần thập phân của kết quả bằng tổng phần thập phân của phân số
 	return convertToString(mul);
+}
+
+string decimalFractions(string mod, int divisor) //Lấy tối đa 20 chữ số thập phân
+{
+	string dFrac = "";
+	mod += "0"; //Thêm số "0" phía sau phần dư
+	int i = 0;
+	while (i < 20)
+	{
+		dFrac += (mod/divisor) ; //Lấy phần nguyên của kết quả phép chia phần dư đã thêm "0
+		mod = to_string(mod % divisor); //Lấy phần dư
+		if (mod == "0") //Nếu phần dư bằng 0 thì phép chia kết thúc
+			break;
+		else //Không thì là tiếp tục thêm số "0" phía sau phần dư cho đến khi tối đa 20 chữ số thập phân
+			mod += "0";
+		i++;
+	}
+	return dFrac;
+}
+
+string divReal(string num1, int num2)
+{
+	REALNUM a, div;
+	a = convertToRealNum(num1);
+	//Tạo biến temp để chuyển kết quả phép % từ int sang string 
+	//Để sử dụng hàm decimalFractions bên dưới 
+	string temp = to_string(a.num % num2);
+
+	string dFract = decimalFractions(temp, num2); //Lấy phần thập phân
+	div.num = a.num / num2; //Lấy phần nguyên
+
+	div.num += dFract; //Nối 2 phần lại
+	div.point = dFract.length(); //Dấu thập phân sẽ bằng độ dài phần thập phân
+	return convertToString(div);
 }
