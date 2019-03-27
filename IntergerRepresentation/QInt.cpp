@@ -359,6 +359,74 @@ QInt QInt::operator<<(int num)const
 	return tmp;
 }
 
+QInt QInt::rol(int num) const
+{
+	// Num nằm trong khoảng từ 0 đến 128. Khác khoảng này, trả về 0
+	if (num <= 0 || num >= 128)
+		return QInt();
+
+	// Tạo biến phụ để xử lý
+	QInt tmp(*this);
+
+	//sao chép biến temp để | với biến sau khi dịch
+	QInt temp(*this);
+
+	// xử lí nếu bít đầu bằng 1
+	if (temp.data[0] >> 31 == 1)
+	{
+		temp = temp >> 1;
+		temp.data[0] = temp.data[0] | (1 << 31);
+
+		//công lên 1 để giảm dịch 1 bit vì đã dịch ở trên
+		num++;
+	}
+
+	// Biến tạm để xét các phần bit cần dịch
+	// dịch trái biến tmp
+	tmp = tmp << num;
+
+	//dịch phải biến temp biến 
+	temp = temp >> (128 - num);
+
+	//  OR biến temp với tmp để ra kết quả
+	tmp = tmp | temp;
+	return tmp;
+}
+
+QInt QInt::ror(int num) const
+{
+	// Num nằm trong khoảng từ 0 đến 128. Khác khoảng này, trả về 0
+	if (num <= 0 || num >= 128)
+		return QInt();
+
+	// Tạo biến phụ để xử lý
+	QInt tmp(*this);
+
+	//sao chép biến temp để | với biến sau khi dịch
+	QInt temp(*this);
+
+	// xử lí nếu bít đầu bằng 1
+	if (temp.data[0] >> 31 == 1)
+	{
+		temp = temp >> 1;
+		temp.data[0] = temp.data[0] | (1 << 31);
+
+		//công lên 1 để giảm dịch 1 bit vì đã dịch ở trên
+		num++;
+	}
+
+	// Biến tạm để xét các phần bit cần dịch
+	// dịch phải biến tmp
+	tmp = tmp >> num;
+
+	//dịch trái biến temp biến 
+	temp = temp >> (128 - num);
+
+	//  OR biến temp với tmp để ra kết quả
+	tmp = tmp | temp;
+	return tmp;
+}
+
 QInt QInt::operator&(const QInt & b)
 {
 	QInt tmp;
@@ -609,41 +677,197 @@ char * QInt::DecToHex(QInt x)
 	return ptrHexCode;
 }
 
-//void PrintQInt(QInt x)
-//{
-//	string LastDEC = "0";
-//	string BinToDec = "1";
-//	int temp;
-//	int Count = 0; ??
-//	int LastBit = 1; ??
-//	bool Sign = false;
-//	if ((x.data[3] & (1 << 31)) == 1) // dịch phải 31 bit tìm bit dấu
-//	{
-//		doiDau(x);
-//		Sign = true;
-//	}
-//	for (int iterOnQInt = 3; iterOnQInt >= 0; iterOnQInt++)
-//	{
-//		temp = x.data[iterOnQInt];
-//		while (temp > 0)
-//		{
-//			int Bit = temp % 2; // lấy bit cuối
-//			if (Bit == 1)
-//			{
-//				while (LastBit > Count) // LastBit là vị trí bit 1 trước đó, Count là vị trí bit 1 đang xét.
-//				{
-//					BinToDec = BinToDec * "2";
-//					LastBit++;
-//				}
-//				LastDEC = LastDEC + BinToDec; // tính giá trị từng bit 1 sau đó cộng vào chuỗi chính
-//			}
-//			Count++;
-//			temp = temp / 2;
-//		}
-//	}
-//	if (Sign == true)
-//	{
-//		// thêm dấu trừ vào đầu chuỗi LastDEC cho t nha t k biết thêm sao cho gọn :))
-//	}
-//	cout << LastDEC;
-//}
+
+bool KiemTraOperator(vector<string> optList, string x)
+{
+	int i;
+	for (i = 0; i < optList.size(); i++)
+	{
+		if (x == optList[i])
+			return true;
+	}
+	return false;
+}
+
+// ham chuan hoa chuoi Binary khi do dai khong du 128 bit
+void standardStrBin(string &opr)
+{
+	string tmp = "";
+	int i = 0;
+	while (i < 128 - opr.length())
+	{
+		tmp.push_back('0');
+		i++;
+	}
+	tmp += opr;
+	opr = tmp;
+}
+
+bool processFileandOutput(istream& inputFile, ostream& outputFile)
+{
+	// How to write
+	string p1, p2, opt, opr1, opr2, ptemp, ptemp2;
+	
+	
+	vector<string> optList = { "+", "-", "*", "/", "<", ">", "<=", ">=", "==", "=", "<<", ">>", "rol", "ror", "&", "|", "^", "~" };
+	while (!inputFile.eof())
+	{
+		p1 = "", p2 = "", ptemp = "", ptemp2 = "", opt = "", opr1 = "", opr2 = "";
+		// Doc tung dong
+		inputFile >> p1;
+		inputFile >> ptemp;
+		if (ptemp == "2" || ptemp == "10" || ptemp == "16") // thuc hien phep chuyen doi giua cac HE
+		{
+			inputFile >> ptemp2;
+			if (KiemTraOperator(optList, ptemp2) == false) //kiem tra neu ptemp2 khong la toan tu thi thuc hien doan sau
+			{
+				p2 = ptemp;
+				opr1 = ptemp2;
+
+				// CHUYỂN LẠI THÀNH STRINGSTREAM
+				stringstream operator1(opr1);
+				// Chuyển chuỗi hệ 10
+				QInt oper1;
+				operator1 >> oper1;
+				if ((p1 == "2") && (opr1.length() < 128))
+				{
+					standardStrBin(opr1);
+				}
+				//xu li dong tai day voi bien opr1 la toan hang duy nhat cua dong
+				if (p1 == "10" && p2 == "2")
+				{
+					//thuc hien chuyen doi DecToBin
+
+				}
+				else if (p1 == "2" && p2 == "10")
+				{
+					//thuc hien chuyen doi BinToDec
+				}
+				else if (p1 == "2" && p2 == "16")
+				{
+					//thuc hien chuyen doi BinToHex
+				}
+				else
+				{
+					//thuc hien chuyen doi DecToHex
+				}
+			}
+			else //neu ptemp2 la toan tu thi thuc hien doan sau
+			{
+				opr1 = ptemp;
+				opt = ptemp2;
+				inputFile >> opr2;
+				if ((p1 == "2") && (opr1.length() < 128))
+				{
+					standardStrBin(opr1);
+				}
+				if ((p1 == "2") && (opr2.length() < 128))
+				{
+					standardStrBin(opr2);
+				}
+			}
+		}
+		else //thuc hien doc tiep cac thong tin cua cac dong co toan tu (+, - , *, /, <, >, ...)
+		{
+			opr1 = ptemp; //copy ptemp vao opr1(toan hang thu 1)
+			inputFile >> opt; //doc toan tu
+			inputFile >> opr2; //doc toan hang thu 2
+
+			// CHUYỂN LẠI THÀNH STRINGSTREAM
+			stringstream  operator2(opr2);
+
+			if ((p1 == "2") && (opr1.length() < 128))
+			{
+				standardStrBin(opr1);
+			}
+			if ((p1 == "2") && (opr2.length() < 128))
+			{
+				standardStrBin(opr2);
+			}
+		}
+		//cout << p1 << "\n" << p2 << "\n" << opr1 << "\n" << opt << "\n" << opr2;
+		//cout << "\n\n";
+		if (opt != "") //thuc hien cac dong co toan tu (+, -, *, /, <, >, ...)
+		{
+			if (opt == "+")
+			{
+				//thuc hien toan tu CONG
+
+			}
+
+			else if (opt == "-")
+			{
+				//thuc hien toan tu TRU
+			}
+			else if (opt == "*")
+			{
+				//thuc hien toan tu NHAN
+			}
+			else if (opt == "/")
+			{
+				//thuc hien toan tu CHIA
+			}
+			else if (opt == "<" || opt == ">" || opt == "<=" || opt == ">=" || opt == "==")
+			{
+				if (opt == "<")
+				{
+					//thuc hien so sanh BE HON
+
+				}
+				else if (opt == ">")
+				{
+					//thuc hien so sanh LON HON
+
+				}
+				else if (opt == "<=")
+				{
+					//thuc hien so sanh BE BANG
+
+				}
+				else if (opt == ">=")
+				{
+
+				}
+				else if (opt == "==")
+				{
+					//thuc hien so sanh BANG
+
+				}
+			}
+			else if (opt == "&")
+			{
+				//thuc hien toan tu AND
+			}
+			else if (opt == "|")
+			{
+				//thuc hien toan tu OR
+			}
+			else if (opt == "^")
+			{
+				//thuc hien toan tu XOR
+			}
+			else if (opt == "~")
+			{
+				//thuc hien toan tu NOT
+			}
+			else if (opt == "<<")
+			{
+				//thuc hien toan tu DICH TRAI
+			}
+			else if (opt == ">>")
+			{
+				//thuc hien toan tu DICH PHAI
+			}
+			else if (opt == "rol")
+			{
+				//thuc hien toan tu XOAY TRAI
+			}
+			else if (opt == "ror")
+			{
+				//thuc hien toan tu XOAY PHAI
+			}
+		}
+	}
+
+	return false;
+}

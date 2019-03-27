@@ -11,22 +11,11 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	QInt a, b;
-	
 	while (1) {
 		cin >> a;
 		cin >> b;
-
-		// cout << a << endl << b << endl;
-		//int c;
-		//cin >> c;
-		// cin >> b;
-
-		// bool test = a.ktAm();
-
 		cout << (a / b) << endl;
 	}
-// cout << (a >> 128) << endl;
-
 //// In ra chuỗi bit trong mảng bool
 ////for (int i = 1; i <= 128; i++)
 ////{

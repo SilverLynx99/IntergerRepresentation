@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <iostream>
+#include <sstream>
 #include "UtilityFunc.h"
 using namespace std;
 
@@ -24,6 +25,8 @@ public:
 	// -- TOÁN TỬ BIT
 	QInt operator>>(int num) const;
 	QInt operator<<(int num) const;
+	QInt rol(int num)const;
+	QInt ror(int num)const;
 
 	QInt operator&(const QInt & b);
 	QInt operator|(const QInt & b);
@@ -112,19 +115,6 @@ public:
 
 	friend ostream& operator<< (ostream& os, const QInt& out)
 	{
-		//int temp;
-		//for (int j = 0; j < 4; j++) {
-		//	for (int i = 31; i >= 0; i--)
-		//	{
-		//		temp = (out.data[j] >> i);
-		//		os << (temp & 1);
-		//		if (i % 8 == 0)
-		//			os << " ";
-		//	}
-		//	os << endl;
-		//}
-
-
 		// Lưu trữ tạm biến out để xử lý
 		QInt temp(out);
 
@@ -145,19 +135,19 @@ public:
 		string sumAll = "0";
 
 		// Lưu kết quả của việc tính 2^i
-		string sum;
+		string sum = "1";
 
+		int lastBit = 0;
 		for (int i = 127; i >= 0; i--)
 		{
 			// Nếu bit đó bằng 1
 			if (temp.getBitAtIdx(i))
 			{
-				// Set sum về 1
-				sum = "1";
-
 				// Tính 2 ^ i
-				for (int j = 0, end = 127 - i; j < end; j++)
+				while (lastBit < (127 - i)) {
 					sum = sum * "2";
+					lastBit++;
+				}
 
 				// Cộng dồn
 				sumAll = sumAll + sum;
@@ -205,3 +195,14 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile);
 
 
 
+//int temp;
+		//for (int j = 0; j < 4; j++) {
+		//	for (int i = 31; i >= 0; i--)
+		//	{
+		//		temp = (out.data[j] >> i);
+		//		os << (temp & 1);
+		//		if (i % 8 == 0)
+		//			os << " ";
+		//	}
+		//	os << endl;
+		//}
