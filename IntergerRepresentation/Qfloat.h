@@ -2,12 +2,19 @@
 #include <vector>
 #include "UtilityFunc.h"
 
-struct Qfloat
+class Qfloat
 {
+private:
 	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
 	// đi từ trái qua phải
-	int Data[4] = { 0 };
-};
+	int Data[4];
 
-void ScanQfloat(Qfloat &x);
-void PrintQfloat(Qfloat x);
+public:
+	Qfloat();
+	Qfloat(const Qfloat &x);
+	Qfloat &operator=(const Qfloat &x);
+	void ScanQfloat(string numberFloat);
+	void PrintQfloat();
+	void BinToDec(bool *bit);
+	bool *DecToBin();
+};
