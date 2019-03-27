@@ -8,7 +8,7 @@ class QInt
 public:
 	QInt();
 	QInt(int inp);
-	QInt(string input);
+	// QInt(string input);
 	QInt(const QInt &src);
 
 	QInt& operator= (const QInt &src);
@@ -50,7 +50,6 @@ public:
 	// Chuyển đổi dãy nhị phân thành QInt
 // WARNING: KHẢ NĂNG RẤT CAO LÀ BỊ LỖI Ở ĐÂY.
 // LỖI LÀ : KHI TRẢ VỀ DỮ LIỆU KHÔNG ĐƯỢC SAO CHÉP MÀ LÀ REF
-
 	static QInt BinToDec(bool * bit);
 
 	// Chuyển đỗi dãy nhị phân thành mã hex
@@ -65,6 +64,9 @@ public:
 	// Xử lý nhập liệu
 	friend istream& operator>> (istream& is, QInt & inp)
 	{
+		// Xóa sạch dữ liệu của QInt inp trước khi nhập
+		inp = QInt();
+
 		// CHƯA XỬ LÝ CHUỖI NHẬP XUẤT CHỖ NÀY
 		// Nhập chuỗi
 		string Number;
@@ -110,18 +112,63 @@ public:
 
 	friend ostream& operator<< (ostream& os, const QInt& out)
 	{
-		int temp;
-		for (int j = 0; j < 4; j++) {
-			for (int i = 31; i >= 0; i--)
-			{
-				temp = (out.data[j] >> i);
-				os << (temp & 1);
-				if (i % 8 == 0)
-					os << " ";
-			}
-			os << endl;
+		//int temp;
+		//for (int j = 0; j < 4; j++) {
+		//	for (int i = 31; i >= 0; i--)
+		//	{
+		//		temp = (out.data[j] >> i);
+		//		os << (temp & 1);
+		//		if (i % 8 == 0)
+		//			os << " ";
+		//	}
+		//	os << endl;
+		//}
+
+
+		// Lưu trữ tạm biến out để xử lý
+		QInt temp(out);
+
+		// Lưu dấu của biến out
+		bool sign = false;
+
+		// Trường hợp số âm
+		if (temp.getBitAtIdx(0))
+		{
+			// Đổi dấu
+			 temp = temp.doiDau();
+
+			 // Đánh dấu
+			 sign = true;
 		}
 
+		// Lưu kết quả
+		string sumAll = "0";
+
+		// Lưu kết quả của việc tính 2^i
+		string sum;
+
+		for (int i = 127; i >= 0; i--)
+		{
+			// Nếu bit đó bằng 1
+			if (temp.getBitAtIdx(i))
+			{
+				// Set sum về 1
+				sum = "1";
+
+				// Tính 2 ^ i
+				for (int j = 0, end = 127 - i; j < end; j++)
+					sum = sum * "2";
+
+				// Cộng dồn
+				sumAll = sumAll + sum;
+			}
+		}
+
+		// Thêm dấu trừ vào nếu có
+		if (sign)
+			sumAll = "-" + sumAll;
+
+		os << sumAll;
 
 		return os;
 	}
@@ -142,16 +189,15 @@ private:
 	// Kiểm tra một số có phải là âm không ?
 	bool ktAm() const;
 
+	// idx >= 0 && idx <= 127
+	// Chuỗi bit được đánh dấu từ 0 --> 127
+	// Từ trái quá phải
 	bool getBitAtIdx(int idx)const;
+
 	void DichTraiDacBiet(QInt &a);
 	// ---
 };
 
-struct test
-{
-
-	int data[4] = { 0 };
-};
 
 // Chức năng: Xử lý stream in và xuất ra stream out
 // Note: Stream in có thể là file, có thể là cin.

@@ -3,7 +3,13 @@
 
 void ScanQfloat(Qfloat &x)
 {
-	string NumberFloat = "0.392578125";
+	// xóa dữ liệu của x trước khi nhập
+	for (int i = 0; i < 4; i++)
+		x.Data[i] = 0;
+
+	string NumberFloat;
+	
+	cin >> NumberFloat;
 	string DECint; // chứa phần nguyên
 	string DECfloat; // chứa phần thực
 	vector<char> bitFract; // chứa bit phần định trị
@@ -49,26 +55,35 @@ void ScanQfloat(Qfloat &x)
 	else
 		check = true;
 
-	//Chuyển phần thực sang bit
-	while ((DECfloat != "0.0") && (DECfloat.size() != 0))
-	{
-		DECfloat = mulReal(DECfloat, 2);
-		if (DECfloat[0] == '1')
-		{
-			bitFract.push_back('1');
-			DECfloat = subReal(DECfloat, "1");
+	int max = 112 - bitFract.size();
 
-			if (check) //Xét đc bit 1 đầu tiên trong trường hợp phần nguyên bằng 0
+	//Chuyển phần thực sang bit
+	if (DECfloat.size() != 0)
+	{
+		for (i = 0; i < max; i++)
+		{
+			if (DECfloat.compare("0.0") == 0)
+				break;
+
+			DECfloat = mulReal(DECfloat, 2);
+			if (DECfloat[0] == '1')
 			{
-				E = 16383 - bitFract.size(); //Mũ âm do phần nguyên bằng 0 rồi cộng cho 2^14 - 1
-				check = false; //Đổi lại trạng thái sau khi xét được bit 1 đầu tiên
-				//Lấy hết bit trước đó ra
-				while (!bitFract.empty())
-					bitFract.pop_back();
+				bitFract.push_back('1');
+				DECfloat = subReal(DECfloat, "1");
+
+				if (check) //Xét đc bit 1 đầu tiên trong trường hợp phần nguyên bằng 0
+				{
+					E = 16383 - bitFract.size(); //Mũ âm do phần nguyên bằng 0 rồi cộng cho 2^14 - 1
+					check = false; //Đổi lại trạng thái sau khi xét được bit 1 đầu tiên
+					//Lấy hết bit trước đó ra
+					while (!bitFract.empty())
+						bitFract.pop_back();
+				}
 			}
+			else
+				bitFract.push_back('0');
+
 		}
-		else
-			bitFract.push_back('0');
 	}
 
 	//Chuyển mũ sang bit và chèn bit dấu ở đầu
@@ -204,7 +219,8 @@ void PrintQfloat(Qfloat x)
 	{
 		dec = "1";
 		index = 0;
-		temp1 = x.Data[0] >> 16;
+		moveBit = 16;
+		temp1 = x.Data[0] << 16;
 	}
 	else if (exp > 0) //Khi mũ > 0, nếu mũ < 0 thì phần nguyên = 0
 	{

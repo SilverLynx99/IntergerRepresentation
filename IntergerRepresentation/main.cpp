@@ -10,64 +10,70 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	QInt a;
+	QInt a, b;
 	
-	cin >> a;
-	//int c;
-	//cin >> c;
-	// cin >> b;
-	
-	// bool test = a.ktAm();
-	cout << a << endl;
-	cout << (a >> 128) << endl;
+	while (1) {
+		cin >> a;
+		cin >> b;
 
-	//// In ra chuỗi bit trong mảng bool
-	////for (int i = 1; i <= 128; i++)
-	////{
-	////	ptrBool[i - 1] ? printf("1") : printf("0");
-	////	if (i % 8 == 0) printf(" ");
-	////}
+		// cout << a << endl << b << endl;
+		//int c;
+		//cin >> c;
+		// cin >> b;
 
-	printf("\n");
-	char * hexCode = QInt::DecToHex(a);
-	printf("%s", hexCode);
+		// bool test = a.ktAm();
 
-	//printf("\n");
+		cout << (a / b) << endl;
+	}
+// cout << (a >> 128) << endl;
 
-	//// QInt b = BinToDec(ptrBool);
-	//inChuoiBitQInt(BinToDec(DecToBin(a)));
+//// In ra chuỗi bit trong mảng bool
+////for (int i = 1; i <= 128; i++)
+////{
+////	ptrBool[i - 1] ? printf("1") : printf("0");
+////	if (i % 8 == 0) printf(" ");
+////}
 
-	////delete[] ptrBool;
-	//delete[] hexCode;
+//printf("\n");
+//char * hexCode = QInt::DecToHex(a);
+//printf("%s", hexCode);
 
-	//// Kiểm tra đủ 3 tham số không. Nếu không --> báo lỗi
-	//if (argc != 3) {
-	//	cout << "Usage: file.exe input.txt output.txt";
-	//	exit(1);
-	//}
+//printf("\n");
 
-	//// Kiểm tra mở file input
-	//ifstream inputFile;
-	//inputFile.open(argv[1]);
-	//if (!inputFile) {
-	//	cout << "Cannot open the input file." << endl;
-	//	return 1;
-	//}
+//// QInt b = BinToDec(ptrBool);
+//inChuoiBitQInt(BinToDec(DecToBin(a)));
 
-	//// Kiểm tra mở file output
-	//ofstream outputFile;
-	//outputFile.open(argv[2]);
-	//if (!outputFile) {
-	//	cout << "Cannot open the output file." << endl;
-	//	return 1;
-	//}
+////delete[] ptrBool;
+//delete[] hexCode;
 
-	//// Xử lý stream in và xuất ra stream out
-	//processFileandOutput(inputFile, outputFile);
+//// Kiểm tra đủ 3 tham số không. Nếu không --> báo lỗi
+//if (argc != 3) {
+//	cout << "Usage: file.exe input.txt output.txt";
+//	exit(1);
+//}
 
-	// Đóng file
-	//inputFile.close();
-	//outputFile.close();
+//// Kiểm tra mở file input
+//ifstream inputFile;
+//inputFile.open(argv[1]);
+//if (!inputFile) {
+//	cout << "Cannot open the input file." << endl;
+//	return 1;
+//}
+
+//// Kiểm tra mở file output
+//ofstream outputFile;
+//outputFile.open(argv[2]);
+//if (!outputFile) {
+//	cout << "Cannot open the output file." << endl;
+//	return 1;
+//}
+
+//// Xử lý stream in và xuất ra stream out
+//processFileandOutput(inputFile, outputFile);
+
+// Đóng file
+//inputFile.close();
+//outputFile.close();
 
 	system("pause");
 	return 0;

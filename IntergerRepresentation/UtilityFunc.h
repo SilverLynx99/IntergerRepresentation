@@ -8,14 +8,14 @@ using namespace std;
 
 // ----------- Phép toán cho dạng chuỗi
 
-////Thêm số 0 vào chuỗi ngắn hơn cho bằng nhau
-//void standard2String(string &s1, string &s2);
-//
-////Phép nhân một chuỗi với số nguyên
-//string mulWith1Int(string s1, int num);
-//
-////So sánh 2 số dạng chuỗi
-//int compare2String(const string &s1, const string &s2);
+//Thêm số 0 vào chuỗi ngắn hơn cho bằng nhau
+void standard2String(string &s1, string &s2);
+
+//Phép nhân một chuỗi với số nguyên
+string mulWith1Int(string s1, int num);
+
+//So sánh 2 số dạng chuỗi
+int compare2String(const string &s1, const string &s2);
 
 //Phép cộng 2 số dạng chuỗi
 string operator +(string num1, string num2);

@@ -228,14 +228,15 @@ bool QInt::ktAm() const
 bool QInt::getBitAtIdx(int idx)const
 {
 	int i = idx / 32, j = idx % 32;
-	int bit = (this->data[i] >> j) & 1;
+	int bit = (this->data[i] >> (31 - j)) & 1;
 	return bit == 1 ? true : false;
 }
 
 void QInt::DichTraiDacBiet(QInt &a)
 {
-	if ((a.data[0] >> 32 & 1) == 1)
-	{//kiem tra bit đầu của b
+	if (a.getBitAtIdx(0))
+	{
+	//kiem tra bit đầu của b
 	//nếu là một dịch trái b và a sau đó bật bit cuối của a lên 1
 		*this = *this << 1;
 		a = a << 1;
@@ -410,19 +411,20 @@ bool QInt::operator>(const QInt & a) const
 	
 	// Trường hợp cùng dấu.
 	// Duyệt tìm sự sai khác bit.
-	for (int i = 0; i < 128; i++)
+	for (int i = 0; i < 128; i++) {
 		// Tìm thấy sự sai khác
 		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
 		{
 			// Cả 2 đều âm
-			if (this->getBitAtIdx(i - 1))
+			// Lấy bit dấu để ktra
+			if (this->getBitAtIdx(0))
 				// Nếu bit này = 1 --> *this < a (số âm) --> false
-				return this->getBitAtIdx(i) ? false : true;
+				return this->getBitAtIdx(i) ? true : false;
 			else // Cả 2 đều dương
 				// Nếu bit này = 1 --> *this > a (số dương) --> true
 				return this->getBitAtIdx(i) ? true : false;
 		}
-		
+	}
 	// Không tìm thấy sai khác
 	return false;
 }
@@ -436,19 +438,20 @@ bool QInt::operator<(const QInt & a) const
 
 	// Trường hợp cùng dấu.
 	// Duyệt tìm sự sai khác bit.
-	for (int i = 0; i < 128; i++)
+	for (int i = 0; i < 128; i++) {
 		// Tìm thấy sự sai khác
 		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
 		{
 			// Cả 2 đều âm
-			if (this->getBitAtIdx(i - 1))
+			// Lấy bit dấu để ktra
+			if (this->getBitAtIdx(0))
 				// Nếu bit này = 1 --> *this < a (số âm) --> true
-				return this->getBitAtIdx(i) ? true : false;
+				return this->getBitAtIdx(i) ? false : true;
 			else // Cả 2 đều dương
 				// Nếu bit này = 1 --> *this > a (số dương) --> false
 				return this->getBitAtIdx(i) ? false : true;
 		}
-
+	}
 	// Không tìm thấy sai khác
 	return false;
 }
@@ -611,8 +614,8 @@ char * QInt::DecToHex(QInt x)
 //	string LastDEC = "0";
 //	string BinToDec = "1";
 //	int temp;
-//	int Count = 0;
-//	int LastBit = 1;
+//	int Count = 0; ??
+//	int LastBit = 1; ??
 //	bool Sign = false;
 //	if ((x.data[3] & (1 << 31)) == 1) // dịch phải 31 bit tìm bit dấu
 //	{
@@ -624,7 +627,7 @@ char * QInt::DecToHex(QInt x)
 //		temp = x.data[iterOnQInt];
 //		while (temp > 0)
 //		{
-//			int Bit = temp % 2;
+//			int Bit = temp % 2; // lấy bit cuối
 //			if (Bit == 1)
 //			{
 //				while (LastBit > Count) // LastBit là vị trí bit 1 trước đó, Count là vị trí bit 1 đang xét.

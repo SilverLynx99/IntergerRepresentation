@@ -6,7 +6,7 @@ struct Qfloat
 {
 	// Đánh dấu bit 0 là bit đầu tiên của data[0] 
 	// đi từ trái qua phải
-	int Data[4] = { 0 };
+	unsigned int Data[4] = { 0 };
 };
 
 void ScanQfloat(Qfloat &x);
