@@ -703,36 +703,63 @@ void standardStrBin(string &opr)
 	opr = tmp;
 }
 
-bool processFileandOutput(istream& inputFile, ostream& outputFile)
+void processFileandOutput(istream& inputFile, ostream& outputFile)
 {
-	// How to write
+	// opr1 : Toán hạng 1
+	// opr2 : Toán hạng 2
+	// opt : Toán tử
 	string p1, p2, opt, opr1, opr2, ptemp, ptemp2;
 	
-	
+	// Tạo DS các toán tử để so sánh với kq thu được từ input file
 	vector<string> optList = { "+", "-", "*", "/", "<", ">", "<=", ">=", "==", "=", "<<", ">>", "rol", "ror", "&", "|", "^", "~" };
+
 	while (!inputFile.eof())
 	{
+		// Gán mặc định cho các tp
 		p1 = "", p2 = "", ptemp = "", ptemp2 = "", opt = "", opr1 = "", opr2 = "";
-		// Doc tung dong
+	
+		// Đọc cơ số đầu tiên vào p1
+		// Đọc số tiếp theo vào ptemp để kiểm tra
 		inputFile >> p1;
 		inputFile >> ptemp;
-		if (ptemp == "2" || ptemp == "10" || ptemp == "16") // thuc hien phep chuyen doi giua cac HE
+
+		// Thực hiện phép chuyển đổi giữa các hệ
+		if (ptemp == "2" || ptemp == "10" || ptemp == "16") 
 		{
+			// Đọc tiếp để kiểm tra thành phần phía sau là toán tử hay số
 			inputFile >> ptemp2;
-			if (KiemTraOperator(optList, ptemp2) == false) //kiem tra neu ptemp2 khong la toan tu thi thuc hien doan sau
+
+			// Trường hợp nếu ptemp2 không là toán tử thì ta thực hiện chuyển đổi cơ số
+			if (KiemTraOperator(optList, ptemp2) == false) 
 			{
+				// Lúc này t chuyển cơ số vào p2 và toán hạng chuyển đổi vào opr1
 				p2 = ptemp;
 				opr1 = ptemp2;
 
-				// CHUYỂN LẠI THÀNH STRINGSTREAM
-				stringstream operator1(opr1);
-				// Chuyển chuỗi hệ 10
-				QInt oper1;
-				operator1 >> oper1;
+				// Xử lý chuỗi để đưa vào hàm
+				// Trường hợp chuỗi đầu vào là nhị phân
 				if ((p1 == "2") && (opr1.length() < 128))
 				{
 					standardStrBin(opr1);
+					// PHÁT VIẾT CHỖ NÀY, DÙNG VÒNG LẶP HA
+					// Chuyển đỗi chuỗi về dạng mảng bool * gồm 128 byte
+					// Sử dụng cấp phát động và nhớ hủy vùng nhớ bên dưới
+					// Sử dụng mảng bool này để đưa vào hàm BinToDec và BinToHex
 				}
+
+				// Trường hợp chuỗi đầu vào là thập phân
+				// Ta dùng stringstream để đưa nó vào QInt
+				// NOTE CHO PHÁT: LÚC NÀY T DÙNG BIẾN  oper1 để input vào
+				// các hàm chuyển đổi còn lại
+				QInt oper1;
+				if (p1 == "10")
+				{
+					// CHUYỂN LẠI THÀNH STRINGSTREAM
+					stringstream operator1(opr1);
+				
+					operator1 >> oper1;
+				}
+
 				//xu li dong tai day voi bien opr1 la toan hang duy nhat cua dong
 				if (p1 == "10" && p2 == "2")
 				{
@@ -752,11 +779,17 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 					//thuc hien chuyen doi DecToHex
 				}
 			}
-			else //neu ptemp2 la toan tu thi thuc hien doan sau
+
+			// ptemp2 là toán tử, ta đọc tiếp toán hạng thứ 2
+			else 
 			{
 				opr1 = ptemp;
 				opt = ptemp2;
+
+				// Đọc toán hạng thứ 2
 				inputFile >> opr2;
+
+				// Thực hiện chuẩn hóa chuỗi nếu cả 2 toán hạng đều là chuỗi nhị phân
 				if ((p1 == "2") && (opr1.length() < 128))
 				{
 					standardStrBin(opr1);
@@ -767,14 +800,14 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 				}
 			}
 		}
-		else //thuc hien doc tiep cac thong tin cua cac dong co toan tu (+, - , *, /, <, >, ...)
+		
+		// Thuc hien doc tiep cac thong tin 
+		// cua cac dong co toan tu (+, - , *, /, <, >, ...)
+		else 
 		{
 			opr1 = ptemp; //copy ptemp vao opr1(toan hang thu 1)
 			inputFile >> opt; //doc toan tu
 			inputFile >> opr2; //doc toan hang thu 2
-
-			// CHUYỂN LẠI THÀNH STRINGSTREAM
-			stringstream  operator2(opr2);
 
 			if ((p1 == "2") && (opr1.length() < 128))
 			{
@@ -785,14 +818,35 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 				standardStrBin(opr2);
 			}
 		}
+
 		//cout << p1 << "\n" << p2 << "\n" << opr1 << "\n" << opt << "\n" << opr2;
 		//cout << "\n\n";
-		if (opt != "") //thuc hien cac dong co toan tu (+, -, *, /, <, >, ...)
+
+		// Tạo thêm 2 biến kiểu QInt để thực hiện phép toán
+		if (p1 == "2") {
+			// Thực hiện đưa thẳng các bit này vào QInt luôn, bằng tay
+		}
+
+		if (p1 == "16")
+		{
+			// Chuyển chuỗi này về dạng chuỗi thập phân rồi đưa vào QInt luôn
+		}
+
+		if (p1 == "10")
+		{
+			// Đưa thẳng chuỗi này về dạng QInt bằng stringstream
+		}
+
+		// Biên lưu lại kq
+		QInt result;
+		
+		// THỰC HIỆN cac dong co toan tu (+, -, *, /, <, >, ...)
+		if (opt != "") 
 		{
 			if (opt == "+")
 			{
 				//thuc hien toan tu CONG
-
+				result = ???
 			}
 
 			else if (opt == "-")
@@ -809,10 +863,13 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 			}
 			else if (opt == "<" || opt == ">" || opt == "<=" || opt == ">=" || opt == "==")
 			{
+				// Tạo biến lưu kq
+				bool resultComparison = false;
+
 				if (opt == "<")
 				{
 					//thuc hien so sanh BE HON
-
+					resultComparison = ....;
 				}
 				else if (opt == ">")
 				{
@@ -833,6 +890,8 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 					//thuc hien so sanh BANG
 
 				}
+
+				outputFile << resultComparison ? "True" : "False";
 			}
 			else if (opt == "&")
 			{
@@ -867,7 +926,7 @@ bool processFileandOutput(istream& inputFile, ostream& outputFile)
 				//thuc hien toan tu XOAY PHAI
 			}
 		}
-	}
 
-	return false;
+		outputFile << result;
+	}
 }

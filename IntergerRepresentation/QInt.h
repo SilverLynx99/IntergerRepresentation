@@ -191,7 +191,7 @@ private:
 
 // Chức năng: Xử lý stream in và xuất ra stream out
 // Note: Stream in có thể là file, có thể là cin.
-bool processFileandOutput(istream& inputFile, ostream& outputFile);
+void processFileandOutput(istream& inputFile, ostream& outputFile);
 
 
 
