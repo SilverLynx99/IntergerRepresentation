@@ -236,7 +236,7 @@ void QInt::DichTraiDacBiet(QInt &a)
 {
 	if (a.getBitAtIdx(0))
 	{
-	//kiem tra bit đầu của b
+		//kiem tra bit đầu của b
 	//nếu là một dịch trái b và a sau đó bật bit cuối của a lên 1
 		*this = *this << 1;
 		a = a << 1;
@@ -483,14 +483,9 @@ bool QInt::operator>(const QInt & a) const
 		// Tìm thấy sự sai khác
 		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
 		{
-			// Cả 2 đều âm
-			// Lấy bit dấu để ktra
-			if (this->getBitAtIdx(0))
-				// Nếu bit này = 1 --> *this < a (số âm) --> false
-				return this->getBitAtIdx(i) ? true : false;
-			else // Cả 2 đều dương
-				// Nếu bit này = 1 --> *this > a (số dương) --> true
-				return this->getBitAtIdx(i) ? true : false;
+			// Nếu bit này = 1 --> *this > a (số âm) --> true
+			// Nếu bit này = 1 --> *this > a (số dương) --> true
+			return this->getBitAtIdx(i) ? true : false;
 		}
 	}
 	// Không tìm thấy sai khác
@@ -510,14 +505,10 @@ bool QInt::operator<(const QInt & a) const
 		// Tìm thấy sự sai khác
 		if (this->getBitAtIdx(i) != a.getBitAtIdx(i))
 		{
-			// Cả 2 đều âm
-			// Lấy bit dấu để ktra
-			if (this->getBitAtIdx(0))
-				// Nếu bit này = 1 --> *this < a (số âm) --> true
-				return this->getBitAtIdx(i) ? false : true;
-			else // Cả 2 đều dương
-				// Nếu bit này = 1 --> *this > a (số dương) --> false
-				return this->getBitAtIdx(i) ? false : true;
+			// Nếu bit này = 1 --> *this > a (số âm) --> false
+
+			// Nếu bit này = 1 --> *this > a (số dương) --> false
+			return this->getBitAtIdx(i) ? false : true;
 		}
 	}
 	// Không tìm thấy sai khác
@@ -663,7 +654,21 @@ char * QInt::BinToHex(bool * bit)
 	hexChar[SL_CapPhat - 1] = '\0';
 
 	// Chèn thêm dấu vào đầu chuỗi hex code
-	hexChar[0] = (sign ? '-' : '+');
+	hexChar[0] = sign ? '-' : '0';
+
+	// Tìm vị trí của ký tự hex bên trái nhất của chuỗi
+	int cntTemp = 1;
+	for (; cntTemp < SL_CapPhat - 1; cntTemp++)
+		if (hexChar[cntTemp] != '0')
+			break;
+
+	// Thực hiện dịch chuỗi đó về đầu
+	int k = 0;
+	if (sign) k = 1;
+	for (; k + cntTemp < SL_CapPhat; k++)
+	{
+		hexChar[k] = hexChar[k + cntTemp];
+	}
 
 	delete[]tempBit;
 	return hexChar;
@@ -703,13 +708,113 @@ void standardStrBin(string &opr)
 	opr = tmp;
 }
 
+//chuyen doi chuoi ve bool * bin
+void str_Bin(bool *opr_bin, string s)
+{
+	int i;
+	for (i = 0; i <= 127; i++)
+	{
+		if (s[i] == '1')
+			opr_bin[i] = 1;
+		else
+			opr_bin[i] = 0;
+	}
+}
+
+//chuyen doi bool * ve string
+void str_Bool(bool *opr_bin, string &s)
+{
+	// TH số âm thì copy hết
+	if (opr_bin[0])
+	{
+		int i = 0;
+		while (i < 128)
+		{
+			s.push_back(opr_bin[i] ? '1' : '0');
+			i++;
+		}
+	}
+	else
+	{
+		int i = 0;
+		while (i < 128)
+		{
+			if (opr_bin[i])
+				break;
+			i++;
+		}
+
+		while (i < 128)
+		{
+			s.push_back(opr_bin[i] ? '1' : '0');
+			i++;
+		}
+	}
+}
+
+void CopyBitHexaToBin(string &bit, string bitOfHexCode, int pos)
+{
+	int i;
+	for (i = 3; i >= 0; i--)
+	{
+		bit[pos] = bitOfHexCode[i];
+		pos--;
+	}
+}
+
+//Chuyen HEXA ve BINARY
+string HexToBin(string hex)
+{
+	string bit;
+	bit.resize(128);
+	int i;
+	for (i = 0; i < 128; i++)
+	{
+		bit[i] = '0';
+	}
+	vector<string> listBitOfHexCode;
+	listBitOfHexCode.push_back("0000");
+	listBitOfHexCode.push_back("0001");
+	listBitOfHexCode.push_back("0010");
+	listBitOfHexCode.push_back("0011");
+	listBitOfHexCode.push_back("0100");
+	listBitOfHexCode.push_back("0101");
+	listBitOfHexCode.push_back("0110");
+	listBitOfHexCode.push_back("0111");
+	listBitOfHexCode.push_back("1000");
+	listBitOfHexCode.push_back("1001");
+	listBitOfHexCode.push_back("1010");
+	listBitOfHexCode.push_back("1011");
+	listBitOfHexCode.push_back("1100");
+	listBitOfHexCode.push_back("1101");
+	listBitOfHexCode.push_back("1110");
+	listBitOfHexCode.push_back("1111");
+
+	int j = hex.length() - 1;
+	int lenOfBitHex = 128 - 4 * hex.length();
+	for (i = 127; i >= lenOfBitHex; i -= 4)
+	{
+		if (hex[j] >= 48 && hex[j] <= 57)
+		{
+			CopyBitHexaToBin(bit, listBitOfHexCode[hex[j] - 48], i);
+		}
+		else if (hex[j] >= 65 && hex[j] <= 70)
+		{
+			CopyBitHexaToBin(bit, listBitOfHexCode[hex[j] - 55], i);
+		}
+		j = j - 1;
+	}
+
+	return bit;
+}
+
 void processFileandOutput(istream& inputFile, ostream& outputFile)
 {
 	// opr1 : Toán hạng 1
 	// opr2 : Toán hạng 2
 	// opt : Toán tử
 	string p1, p2, opt, opr1, opr2, ptemp, ptemp2;
-	
+
 	// Tạo DS các toán tử để so sánh với kq thu được từ input file
 	vector<string> optList = { "+", "-", "*", "/", "<", ">", "<=", ">=", "==", "=", "<<", ">>", "rol", "ror", "&", "|", "^", "~" };
 
@@ -717,20 +822,20 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 	{
 		// Gán mặc định cho các tp
 		p1 = "", p2 = "", ptemp = "", ptemp2 = "", opt = "", opr1 = "", opr2 = "";
-	
+
 		// Đọc cơ số đầu tiên vào p1
 		// Đọc số tiếp theo vào ptemp để kiểm tra
 		inputFile >> p1;
 		inputFile >> ptemp;
 
 		// Thực hiện phép chuyển đổi giữa các hệ
-		if (ptemp == "2" || ptemp == "10" || ptemp == "16") 
+		if (ptemp == "2" || ptemp == "10" || ptemp == "16")
 		{
 			// Đọc tiếp để kiểm tra thành phần phía sau là toán tử hay số
 			inputFile >> ptemp2;
 
 			// Trường hợp nếu ptemp2 không là toán tử thì ta thực hiện chuyển đổi cơ số
-			if (KiemTraOperator(optList, ptemp2) == false) 
+			if (KiemTraOperator(optList, ptemp2) == false)
 			{
 				// Lúc này t chuyển cơ số vào p2 và toán hạng chuyển đổi vào opr1
 				p2 = ptemp;
@@ -738,6 +843,7 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 
 				// Xử lý chuỗi để đưa vào hàm
 				// Trường hợp chuỗi đầu vào là nhị phân
+				bool * opr1_Bin = new bool[128];
 				if ((p1 == "2") && (opr1.length() < 128))
 				{
 					standardStrBin(opr1);
@@ -745,6 +851,8 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 					// Chuyển đỗi chuỗi về dạng mảng bool * gồm 128 byte
 					// Sử dụng cấp phát động và nhớ hủy vùng nhớ bên dưới
 					// Sử dụng mảng bool này để đưa vào hàm BinToDec và BinToHex
+
+					str_Bin(opr1_Bin, opr1);
 				}
 
 				// Trường hợp chuỗi đầu vào là thập phân
@@ -756,7 +864,7 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 				{
 					// CHUYỂN LẠI THÀNH STRINGSTREAM
 					stringstream operator1(opr1);
-				
+
 					operator1 >> oper1;
 				}
 
@@ -764,30 +872,48 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 				if (p1 == "10" && p2 == "2")
 				{
 					//thuc hien chuyen doi DecToBin
+					bool * bin = QInt::DecToBin(oper1);
+					
+					string temp;
+					str_Bool(bin, temp);
 
+					outputFile <<temp << endl;
+					delete[] bin;
 				}
 				else if (p1 == "2" && p2 == "10")
 				{
 					//thuc hien chuyen doi BinToDec
+					QInt res;
+					res = QInt::BinToDec(opr1_Bin);
+					outputFile << res << endl;
+					delete[] opr1_Bin;
 				}
 				else if (p1 == "2" && p2 == "16")
 				{
 					//thuc hien chuyen doi BinToHex
+					QInt res;
+					char *rs = res.BinToHex(opr1_Bin);
+					outputFile << rs << endl;
+					delete[] opr1_Bin;
 				}
 				else
 				{
 					//thuc hien chuyen doi DecToHex
+					QInt res;
+					char *rs = res.DecToHex(oper1);
+					outputFile << rs << endl;
 				}
 			}
 
 			// ptemp2 là toán tử, ta đọc tiếp toán hạng thứ 2
-			else 
+			else
 			{
 				opr1 = ptemp;
 				opt = ptemp2;
 
 				// Đọc toán hạng thứ 2
-				inputFile >> opr2;
+				if (opt != "~")
+					inputFile >> opr2;
 
 				// Thực hiện chuẩn hóa chuỗi nếu cả 2 toán hạng đều là chuỗi nhị phân
 				if ((p1 == "2") && (opr1.length() < 128))
@@ -800,14 +926,16 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 				}
 			}
 		}
-		
+
 		// Thuc hien doc tiep cac thong tin 
 		// cua cac dong co toan tu (+, - , *, /, <, >, ...)
-		else 
+		else
 		{
 			opr1 = ptemp; //copy ptemp vao opr1(toan hang thu 1)
 			inputFile >> opt; //doc toan tu
-			inputFile >> opr2; //doc toan hang thu 2
+
+			if (opt != "~")
+				inputFile >> opr2; //doc toan hang thu 2
 
 			if ((p1 == "2") && (opr1.length() < 128))
 			{
@@ -819,47 +947,78 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 			}
 		}
 
-		//cout << p1 << "\n" << p2 << "\n" << opr1 << "\n" << opt << "\n" << opr2;
-		//cout << "\n\n";
-
 		// Tạo thêm 2 biến kiểu QInt để thực hiện phép toán
-		if (p1 == "2") {
-			// Thực hiện đưa thẳng các bit này vào QInt luôn, bằng tay
-		}
-
-		if (p1 == "16")
+		QInt oper1, oper2;
+		if (opt != "")
 		{
-			// Chuyển chuỗi này về dạng chuỗi thập phân rồi đưa vào QInt luôn
-		}
 
-		if (p1 == "10")
-		{
-			// Đưa thẳng chuỗi này về dạng QInt bằng stringstream
+			if (p1 == "2") {
+				// Thực hiện đưa thẳng các bit này vào QInt luôn, bằng tay
+				bool *str_bin1 = new bool[128];
+				bool *str_bin2 = new bool[128];
+				str_Bin(str_bin1, opr1);
+				str_Bin(str_bin2, opr2);
+				oper1 = oper1.BinToDec(str_bin1);
+				oper2 = oper2.BinToDec(str_bin2);
+				delete[] str_bin1;
+				delete[] str_bin2;
+			}
+
+			if (p1 == "16")
+			{
+				// Chuyển chuỗi này về dạng chuỗi thập phân rồi đưa vào QInt luôn
+				string b1, b2;
+				b1 = HexToBin(opr1);
+				b2 = HexToBin(opr2);
+				bool *str_bin1 = new bool[128];
+				bool *str_bin2 = new bool[128];
+				str_Bin(str_bin1, b1);
+				str_Bin(str_bin2, b2);
+				oper1 = oper1.BinToDec(str_bin1);
+				oper2 = oper2.BinToDec(str_bin2);
+				delete[] str_bin1;
+				delete[] str_bin2;
+			}
+
+			if (p1 == "10")
+			{
+				// Đưa thẳng chuỗi này về dạng QInt bằng stringstream
+				stringstream ss1(opr1), ss2(opr2);
+				ss1 >> oper1;
+				ss2 >> oper2;
+			}
 		}
 
 		// Biên lưu lại kq
 		QInt result;
-		
+
 		// THỰC HIỆN cac dong co toan tu (+, -, *, /, <, >, ...)
-		if (opt != "") 
+		if (opt != "")
 		{
 			if (opt == "+")
 			{
 				//thuc hien toan tu CONG
-				result = ???
+				result = oper1 + oper2;
+
 			}
 
 			else if (opt == "-")
 			{
 				//thuc hien toan tu TRU
+				result = oper1 - oper2;
+
 			}
 			else if (opt == "*")
 			{
 				//thuc hien toan tu NHAN
+				result = oper1 * oper2;
+
 			}
 			else if (opt == "/")
 			{
 				//thuc hien toan tu CHIA
+				result = oper1 / oper2;
+
 			}
 			else if (opt == "<" || opt == ">" || opt == "<=" || opt == ">=" || opt == "==")
 			{
@@ -869,64 +1028,113 @@ void processFileandOutput(istream& inputFile, ostream& outputFile)
 				if (opt == "<")
 				{
 					//thuc hien so sanh BE HON
-					resultComparison = ....;
+					resultComparison = oper1 < oper2;
 				}
 				else if (opt == ">")
 				{
 					//thuc hien so sanh LON HON
-
+					resultComparison = oper1 > oper2;
 				}
 				else if (opt == "<=")
 				{
 					//thuc hien so sanh BE BANG
-
+					resultComparison = oper1 <= oper2;
 				}
 				else if (opt == ">=")
 				{
-
+					resultComparison = oper1 >= oper2;
 				}
 				else if (opt == "==")
 				{
 					//thuc hien so sanh BANG
-
+					resultComparison = oper1 == oper2;
 				}
-
-				outputFile << resultComparison ? "True" : "False";
+				if (resultComparison == true)
+					outputFile << "True" << endl;
+				else
+					outputFile << "False" << endl;
 			}
 			else if (opt == "&")
 			{
 				//thuc hien toan tu AND
+				result = oper1 & oper2;
+
 			}
 			else if (opt == "|")
 			{
 				//thuc hien toan tu OR
+				result = oper1 | oper2;
+
 			}
 			else if (opt == "^")
 			{
 				//thuc hien toan tu XOR
+				result = oper1 ^ oper2;
+
 			}
 			else if (opt == "~")
 			{
 				//thuc hien toan tu NOT
+				result = ~oper1;
+
 			}
-			else if (opt == "<<")
+			else if (opt == "<<" || opt == ">>" || opt == "rol" || opt == "ror")
 			{
-				//thuc hien toan tu DICH TRAI
-			}
-			else if (opt == ">>")
-			{
-				//thuc hien toan tu DICH PHAI
-			}
-			else if (opt == "rol")
-			{
-				//thuc hien toan tu XOAY TRAI
-			}
-			else if (opt == "ror")
-			{
-				//thuc hien toan tu XOAY PHAI
+				stringstream ss(opr2);
+				int num;
+				ss >> num;
+				if (opt == "<<")
+				{
+					//thuc hien toan tu DICH TRAI
+					result = oper1 << num;
+
+				}
+				else if (opt == ">>")
+				{
+					//thuc hien toan tu DICH PHAI
+					result = oper1 >> num;
+
+				}
+				else if (opt == "rol")
+				{
+					//thuc hien toan tu XOAY TRAI
+					result = oper1.rol(num);
+
+				}
+				else if (opt == "ror")
+				{
+					//thuc hien toan tu XOAY PHAI
+					result = oper1.ror(num);
+
+				}
 			}
 		}
 
-		outputFile << result;
+		// Nếu p1 bằng 16, chuyển đổi result về dạng hex
+		if (opt == "+" || opt == "-" || opt == "*" || opt == "/" || opt == "&"
+			|| opt == "|" || opt == "^" || opt == "~" || opt == ">>" || opt == "<<" || opt == "ror" || opt == "rol") {
+			if (p1 == "16")
+			{
+				string temp(QInt::DecToHex(result));
+
+				outputFile << temp << endl;
+			}
+			else if (p1 == "2")
+			{
+				bool * ptrBool = QInt::DecToBin(result);
+				string temp;
+
+				// Chuyển đổi từ chuỗi bool sang string 
+				str_Bool(ptrBool, temp);
+				// ---
+
+				outputFile << temp << endl;
+				delete[]ptrBool;
+			}
+			else if (p1 == "10")
+			{
+				outputFile << result << endl;
+			}
+		}
 	}
 }

@@ -39,4 +39,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="inputFile.txt" />
+    <Text Include="outputFile.txt" />
+  </ItemGroup>
 </Project>

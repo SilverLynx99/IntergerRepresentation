@@ -9,7 +9,6 @@ class QInt
 public:
 	QInt();
 	QInt(int inp);
-	// QInt(string input);
 	QInt(const QInt &src);
 
 	QInt& operator= (const QInt &src);
@@ -113,6 +112,22 @@ public:
 		return is;
 	}
 
+	//friend ostream& operator<< (ostream& os, const QInt& out)
+	//{
+	//	int temp;
+	//	for (int j = 0; j < 4; j++) {
+	//		for (int i = 31; i >= 0; i--)
+	//		{
+	//			temp = (out.data[j] >> i);
+	//			os << (temp & 1);
+	//			if (i % 8 == 0)
+	//				os << " ";
+	//		}
+	//		os << endl;
+	//	}
+	//	return os;
+	//}
+
 	friend ostream& operator<< (ostream& os, const QInt& out)
 	{
 		// Lưu trữ tạm biến out để xử lý
@@ -168,7 +183,7 @@ private:
 	// đi từ trái qua phải
 
 	// Bit là bit dấu. Số âm viết ở dạng bù 2.
-	int data[4];
+	unsigned int data[4];
 
 
 	//--- UTILITY FUNCTION FOR QINT
@@ -195,14 +210,3 @@ void processFileandOutput(istream& inputFile, ostream& outputFile);
 
 
 
-//int temp;
-		//for (int j = 0; j < 4; j++) {
-		//	for (int i = 31; i >= 0; i--)
-		//	{
-		//		temp = (out.data[j] >> i);
-		//		os << (temp & 1);
-		//		if (i % 8 == 0)
-		//			os << " ";
-		//	}
-		//	os << endl;
-		//}

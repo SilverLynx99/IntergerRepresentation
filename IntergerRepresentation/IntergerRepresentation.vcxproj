@@ -125,6 +125,10 @@
     <ClCompile Include="QInt.cpp" />
     <ClCompile Include="UtilityFunc.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="inputFile.txt" />
+    <Text Include="outputFile.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
